@@ -5,6 +5,8 @@ date: "September 25, 2017"
 output: html_document
 ---
 
+Alinna testing commit to this file. 
+
 Test
 ```{r}
 print("This is just to test that the GitHub repository is all set up and working in a way that it should :p")
