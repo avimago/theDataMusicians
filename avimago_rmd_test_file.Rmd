@@ -9,3 +9,8 @@ Test
 ```{r}
 print("This is just to test that the GitHub repository is all set up and working in a way that it should :p")
 ```
+Test 2 - Second Commit
+```{r}
+print("This is my second commit")
+```
+
