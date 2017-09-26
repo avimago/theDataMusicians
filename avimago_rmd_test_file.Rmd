@@ -4,9 +4,11 @@ author: Hai Wen Chen, Avi Mago, William Marshall, Haochen Song, Siddharth Sriniv
   Swamy, Xuying Zhong
 date: "September 25, 2017"
 output:
+  html_document:
+    toc: yes
   pdf_document:
-    toc: true
-    number_sections: true
+    number_sections: yes
+    toc: yes
 ---
 
 ## Introduction
@@ -25,11 +27,121 @@ ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
 We can see from the boxplot that there is a relationship between Attrition and Total Satisfaction. Employees who left the company in the end has a lower average total satisfaction and those who stay in the company are more satisfacted with their company. So we can say that by predicting the employee's total satisfaction, we can know whether he is going to leave this company or not.
 
+
+
+
 # Hypothesis 
 
 # Method 
 
-# Analysis 
+## Analysis 
+
+# Correlation Test with TotalSatisfaction relative factors
+In this part, in order to seek what is the suitable regression function, we are going to find out how does each potential variables correlated with total satisfaction for employees. The factors need to be inspected and the resaons of selecting them are listed below.
+```{r,echo=FALSE,message=FALSE}
+library(knitr)
+Variables<-c("Age","MonthlyIncom","DistanceFromHome","PercentSalaryHike","YearsInCurrentRole")
+Reasons<-c("Expectations of employees may differ according to their ages",
+           "Money might be the most direct reason for job satisfaction",
+           "Time taken travel to work may affect total satisfaction",
+           "Consider about furture development, people may be more happy with high Percent Salary Hike",
+           "Long time for repeating the same task might decrease the interest on work")
+a<-data.frame(Variables,Reasons)
+
+knitr::kable(a)
+
+```
+
+
+###1) Age
+```{r}
+cor.test(IBM[,"Age"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(0.91674,4)
+df<-1468
+P_value<-0.3594
+Correlation<-round(0.02391978  ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+##The table may not be seen on R markdown here, but can be seen when knited!
+```
+
+As shown above, the correlation between age and total satisfaction are around 0.024, there is little relationship between them. Older employees might be more used to the company environment and youger emplloyees seems have higher expectation.
+
+###2) MonthlyIncome
+
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"MonthlyIncome"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(-0.66132,4)
+df<-1468
+P_value<-0.5085
+Correlation<-round(0.01725778 ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+Similar to age, although there is evidence shown on p-value that the null hypothesis is significant, the 0.017 correlation value still implies a little positive relationship between monthly income and satisfaction. However, the increase on monthly income doesn't influence that much as what we expected before.
+
+###3) Distance from Home
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"DistanceFromHome"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(-0.63048,4)
+df<-1468
+P_value<-0.5285
+Correlation<-round(-0.01645315  ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+It can be observed from the above test that total satisafaction is negatively and weakly connected with distance from home. In this case, time cost on travel to work is not a reason to be considered for employees when measuring about satisafaction level.
+
+###4) Percent Salary Hike
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"PercentSalaryHike"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(-1.1118,4)
+df<-1468
+P_value<-0.2664
+Correlation<-round(-0.02900669 ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+Similar as the privous factor, with -0.029 correlation value, increasing on percent salary hike may have no impact on changing employee's satisfaction.
+
+###5) Years In Current Role
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"YearsInCurrentRole"],IBM[,"TotalSatisfaction"])
+```
+
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(0.68209,4)
+df<-1468
+P_value<-0.4953
+Correlation<-round(0.01779959 ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+Different from what we expected before, years in current role shows weak but positive correlation with total satisfaction, which implies the longer employees working on the same role the higher satisfaction they have. 
+
+###Conclusion for the correlation test
+As we can see from the above test, age, monthly income and years in current role are higher relative with total satisafaction compared with other two factors. However, their correlation value are still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
+
+
+
+
 
 # Conclusion 
 
