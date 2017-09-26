@@ -14,7 +14,7 @@ output:
 ## The Data Set
 ```{r}
 library(dplyr)
-IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
+IBM <- read.csv("IBM_HR.csv")
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager) %>% 
   mutate(TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
@@ -22,7 +22,7 @@ library(ggplot2)
 Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
 ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
-We can see from the boxplot that employees
+We can see from the boxplot that employees who left the company in the end has a lower average total 
 
 # Hypothesis 
 
