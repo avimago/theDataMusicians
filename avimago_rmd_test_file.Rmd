@@ -8,18 +8,33 @@ output:
     toc: true
     number_sections: true
 ---
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
+colnames(IBM)[1] <- "Age"
+IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
+```
+# Introduction
+## The relationship between Attrition and Total Satisfaction
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
 
-## Introduction
+IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
-## The Data Set
+library(ggplot2)
+Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
+ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
+```
+
 # Dataset Description
-This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). The variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
-```{r echo=FALSE}
+This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
 personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
                                    "EducationField", "Gender", "MaritalStatus",
                                    "NumCompaniesWorked","TotalWorkingYears"),
-                       Type=c("integer","integer","integer","factor","factor","factor","integer","integer"),
+                       Type=c("integer","integer","factor","factor","factor","factor","integer","integer"),
                        Description=c("The Employee's age", 
                                      "The distance from home to work", 
                                      "Level of education (1 'Below College', 2 'College', 3 'Bachelor', 4 'Master', 5 'Doctor')",
@@ -29,38 +44,38 @@ personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
 
 kable(personal, caption = "Personal Information")
 ```
-```{r echo=FALSE}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
 jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
                                  "JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike",
                                  "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
                                  "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager"),
-                      Type=c("factor","factor","integer","factor","integer","integer","integer","factor","integer","integer",
-                             "factor","integer","integer","integer","integer","integer","integer","integer","integer"),
-                      Description=c("If this employee left the company", "The frquency of business travel", "sth", "The department of this employee (Human Resource, Research & Development and Sales)","sth","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","sth", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee process", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
+                      Type=c("factor","factor","integer","factor","integer","factor","factor","factor","integer","integer",
+                             "factor","integer","integer","factor","factor","integer","integer","integer","integer"),
+                      Description=c("If this employee left the company", "The frquency of business travel", "sth", 
+                                    "The department of this employee (Human Resource, Research & Development and Sales)","sth","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","sth", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee process", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
 
 kable(jobinfo, caption = "Job Information")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
-totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance" ),
-                     Type=c("integer","integer","integer","integer"),
-                     Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')"))
+totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
+                                "TotalSatisfaction"),
+                     Type=c("integer","integer","integer","integer","integer"),
+                     Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')",
+                                   "The sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance "))
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
-# The relationship between Attrition and Total Satisfaction
-```{r echo=FALSE}
-library(dplyr)
-IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
-colnames(IBM)[1] <- "Age"
-IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager) %>% 
-  mutate(TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
-library(ggplot2)
-Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
-ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
-```
+
+
+
+
 We can see from the boxplot that there is a relationship between Attrition and Total Satisfaction. Employees who left the company in the end has a lower average total satisfaction and those who stay in the company are more satisfacted with their company. So we can say that by predicting the employee's total satisfaction, we can know whether he is going to leave this company or not.
 
 # Hypothesis 
@@ -71,6 +86,5 @@ We can see from the boxplot that there is a relationship between Attrition and T
 
 # Conclusion 
 
-Test 5 - Git Hub App
 
 
