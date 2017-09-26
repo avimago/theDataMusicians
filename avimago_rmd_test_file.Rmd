@@ -20,8 +20,9 @@ IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorke
 
 library(ggplot2)
 Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
-ggplot(Att_TotalSat,aes(x=Attrition))
+ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
+We can see from the boxplot that employees
 
 # Hypothesis 
 
