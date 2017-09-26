@@ -9,9 +9,19 @@ output:
     number_sections: true
 ---
 
-# Introduction
+## Introduction
 
 ## The Data Set
+```{r}
+library(dplyr)
+IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
+IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager) %>% 
+  mutate(TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
+
+library(ggplot2)
+Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
+ggplot(Att_TotalSat,aes(x=Attrition))
+```
 
 # Hypothesis 
 
