@@ -29,7 +29,45 @@ We can see from the boxplot that there is a relationship between Attrition and T
 
 # Method 
 
-# Analysis 
+# Analysis
+
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+
+
+#Plots
+#Training Time Last Year (Yes vs No)
+ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+
+#Job Satisfaction (Y vs N)
+ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
+
+#Department wise Attrition (Y vs N)
+ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
+
+#Monthly Income Density (Y vs N)
+ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
+
+#Years At Company Density (Y vs N)
+ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+
+#Years Since Last Promotion (Y vs N)
+ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+
+#Business Travel (Y vs N)
+ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+
+#Work Life Balance (Y vs N)
+ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+
 
 # Conclusion 
 
