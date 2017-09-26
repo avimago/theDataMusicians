@@ -71,7 +71,7 @@ totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","Rel
                                    "The sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance "))
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
-The 
+
 
 # Hypothesis 
 
