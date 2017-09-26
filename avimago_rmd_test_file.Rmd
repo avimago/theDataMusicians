@@ -23,7 +23,7 @@ library(ggplot2)
 Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
 ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
-We can see from the boxplot that there is a relationship between employees who left the company in the end has a lower average total satisfaction
+We can see from the boxplot that there is a relationship between Attrition and Total Satisfaction. Employees who left the company in the end has a lower average total satisfaction and those who stay in the company are more satisfacted with their company. So we can say that by predicting the employee's total satisfaction, we can know whether he is going to leave this company or not.
 
 # Hypothesis 
 
