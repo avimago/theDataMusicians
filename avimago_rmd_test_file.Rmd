@@ -117,6 +117,44 @@ ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
 ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
 
 
+# Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
+
+#First, regressing Attrition on department. Not statistically significant
+att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
+
+#Second, regressing Attrition on DistanceFromHome
+att_2 <- glm(formula = Attrition ~ DistanceFromHome, data = IBM, family=binomial)
+
+#Third, regressing Education on Attrition (NOT DONE YET)
+att_3 <- glm(formula = Attrition ~ CONVERTEducation, data = IBM, family=binomial)
+
+#Fourth, regressing Age on Attrition
+att_4 <- glm(formula = Attrition ~ Age, data = IBM, family=binomial)
+
+#Fifth, regressing Hourly Rate on Attrition. Not statistically significant
+att_5 <- glm(formula = Attrition ~ HourlyRate, data = IBM, family=binomial)
+
+#Sixth, regressing Monthly Income on Attrition.
+att_6 <- glm(formula = Attrition ~ MonthlyIncome, data = IBM, family=binomial)
+
+#Seventh, regressing YearsAtCompany on Attrition
+att_7 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+
+#Eighth, regressing PercentSalaryHike on Attrition
+att_8 <- glm(formula = Attrition ~ PercentSalaryHike, data = IBM, family=binomial)
+
+#Nine, regressing NumCompaniesWorked on Attrition. Not statistically significant.
+att_9 <- glm(formula = Attrition ~ NumCompaniesWorked, data = IBM, family=binomial)
+
+#Something.
+tot_sat_11 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+
+#Avi, this is the test regression
+att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
+summary(att_reg)
+
+
+
 # Conclusion 
 
 
