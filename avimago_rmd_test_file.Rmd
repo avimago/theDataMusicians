@@ -10,22 +10,70 @@ output:
     number_sections: yes
     toc: yes
 ---
-
-## Introduction
-
-## The Data Set
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"
-IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager) %>% 
-  mutate(TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
+IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
+```
+# Introduction
+## The relationship between Attrition and Total Satisfaction
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+
+IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
 library(ggplot2)
 Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
 ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
-We can see from the boxplot that there is a relationship between Attrition and Total Satisfaction. Employees who left the company in the end has a lower average total satisfaction and those who stay in the company are more satisfacted with their company. So we can say that by predicting the employee's total satisfaction, we can know whether he is going to leave this company or not.
+
+# Dataset Description and Descriptive Statistics
+This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
+                                   "EducationField", "Gender", "MaritalStatus",
+                                   "NumCompaniesWorked","TotalWorkingYears"),
+                       Type=c("integer","integer","factor","factor","factor","factor","integer","integer"),
+                       Description=c("The Employee's age", 
+                                     "The distance from home to work", 
+                                     "Level of education (1 'Below College', 2 'College', 3 'Bachelor', 4 'Master', 5 'Doctor')",
+                                     "The subject of the employee's education (Human Resources, Life Sciences, Marketing, Medical, Other, Technical Degree)", 
+                                     "Gender of this employee", "Marital status of this employee (Divorced, Married, Single)",
+                                     "The number of companies this employee has worked", "Total number of years this employee has worked since graduation"))
+
+kable(personal, caption = "Personal Information")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
+                                 "JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike",
+                                 "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
+                                 "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager"),
+                      Type=c("factor","factor","integer","factor","integer","factor","factor","factor","integer","integer",
+                             "factor","integer","integer","factor","factor","integer","integer","integer","integer"),
+                      Description=c("If this employee left the company", "The frquency of business travel", "sth", 
+                                    "The department of this employee (Human Resource, Research & Development and Sales)","sth","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","sth", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee process", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
+
+kable(jobinfo, caption = "Job Information")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
+                                "TotalSatisfaction"),
+                     Type=c("integer","integer","integer","integer","integer"),
+                     Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')",
+                                   "The sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance "))
+kable(totals, caption = "Satisfaction to the Job in Total")
+```
+
 
 
 
@@ -34,6 +82,7 @@ We can see from the boxplot that there is a relationship between Attrition and T
 
 # Method 
 
+<<<<<<< HEAD
 ## Analysis 
 
 # Correlation Test with TotalSatisfaction relative factors
@@ -141,10 +190,87 @@ As we can see from the above test, age, monthly income and years in current role
 
 
 
+=======
+# Analysis
+
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+
+
+#Plots
+#Training Time Last Year (Yes vs No)
+ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+
+#Job Satisfaction (Y vs N)
+ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
+
+#Department wise Attrition (Y vs N)
+ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
+
+#Monthly Income Density (Y vs N)
+ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
+
+#Years At Company Density (Y vs N)
+ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+
+#Years Since Last Promotion (Y vs N)
+ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+
+#Business Travel (Y vs N)
+ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+
+#Work Life Balance (Y vs N)
+ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+
+
+# Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
+
+#First, regressing Attrition on department. Not statistically significant
+att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
+
+#Second, regressing Attrition on DistanceFromHome
+att_2 <- glm(formula = Attrition ~ DistanceFromHome, data = IBM, family=binomial)
+
+#Third, regressing Education on Attrition (NOT DONE YET)
+att_3 <- glm(formula = Attrition ~ CONVERTEducation, data = IBM, family=binomial)
+
+#Fourth, regressing Age on Attrition
+att_4 <- glm(formula = Attrition ~ Age, data = IBM, family=binomial)
+
+#Fifth, regressing Hourly Rate on Attrition. Not statistically significant
+att_5 <- glm(formula = Attrition ~ HourlyRate, data = IBM, family=binomial)
+
+#Sixth, regressing Monthly Income on Attrition.
+att_6 <- glm(formula = Attrition ~ MonthlyIncome, data = IBM, family=binomial)
+
+#Seventh, regressing YearsAtCompany on Attrition
+att_7 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+
+#Eighth, regressing PercentSalaryHike on Attrition
+att_8 <- glm(formula = Attrition ~ PercentSalaryHike, data = IBM, family=binomial)
+
+#Nine, regressing NumCompaniesWorked on Attrition. Not statistically significant.
+att_9 <- glm(formula = Attrition ~ NumCompaniesWorked, data = IBM, family=binomial)
+
+#Something.
+tot_sat_11 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+
+#Avi, this is the test regression
+att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
+summary(att_reg)
+
+>>>>>>> 9cbf55e8d63b23e293a193ca2374544759c17678
 
 
 # Conclusion 
 
-Test 5 - Git Hub App
 
 
