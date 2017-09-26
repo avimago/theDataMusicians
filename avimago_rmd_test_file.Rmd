@@ -15,6 +15,7 @@ output:
 ```{r}
 library(dplyr)
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
+colnames(IBM)[1] <- "Age"
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager) %>% 
   mutate(TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
