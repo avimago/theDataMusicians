@@ -12,7 +12,25 @@ output:
 ## Introduction
 
 ## The Data Set
-```{r}
+# Dataset Description
+This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). The variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the job.
+```{r echo=FALSE}
+library(knitr)
+personal <- data.frame(Variables=c("Age", "DistanceFromHome", "Education",
+                                   "EducationField", "Gender", "MaritalStatus",
+                                   "NumCompaniesWorked","TotalWorkingYears"),
+                       Discription=c("The Employee's age", 
+                                     "The distance from home to work", 
+                                     "Level of education (1 'Below College', 2 'College', 3 'Bachelor', 4 'Master', 5 'Doctor')",
+                                     "The subject of the employee's education (Human Resources, Life Sciences, Marketing, Medical, Other, Technical Degree)", 
+                                     "Gender of this employee", "Marital status of this employee (Divorced, Married, Single)",
+                                     "The number of companies this employee has worked", "Total number of years this employee has worked since graduation"))
+
+kable(personal, caption = "Personal Information")
+```
+
+# The relationship between Attrition and Total Satisfaction
+```{r echo=FALSE}
 library(dplyr)
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"
