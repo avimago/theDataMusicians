@@ -19,6 +19,7 @@ library(knitr)
 personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
                                    "EducationField", "Gender", "MaritalStatus",
                                    "NumCompaniesWorked","TotalWorkingYears"),
+                       Type=c("integer","integer","integer","factor","factor","factor","integer","integer"),
                        Description=c("The Employee's age", 
                                      "The distance from home to work", 
                                      "Level of education (1 'Below College', 2 'College', 3 'Bachelor', 4 'Master', 5 'Doctor')",
@@ -30,14 +31,22 @@ kable(personal, caption = "Personal Information")
 ```
 ```{r echo=FALSE}
 library(knitr)
-jobinfo <- data.frame(Variable=c("Attrition", "BusinessTravel", "DailyRate","Department","HourlyRate","JobInvolvement","JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike", "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany", "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager"), Description=c("If this employee left the company", "The frquency of business travel", "sth", "The department of this employee (Human Resource, Research & Development and Sales)","sth","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","sth", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee process", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
+jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
+                                 "JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike",
+                                 "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
+                                 "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager"),
+                      Type=c("factor","factor","integer","factor","integer","integer","integer","factor","integer","integer",
+                             "factor","integer","integer","integer","integer","integer","integer","integer","integer"),
+                      Description=c("If this employee left the company", "The frquency of business travel", "sth", "The department of this employee (Human Resource, Research & Development and Sales)","sth","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","sth", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee process", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
 
 kable(jobinfo, caption = "Job Information")
 ```
 
 ```{r echo=FALSE}
 library(knitr)
-totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance" ), Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')"))
+totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance" ),
+                     Type=c("integer","integer","integer","integer"),
+                     Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')","The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')"))
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 # The relationship between Attrition and Total Satisfaction
