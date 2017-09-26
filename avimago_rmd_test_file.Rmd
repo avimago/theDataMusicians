@@ -1,34 +1,23 @@
 ---
-title: "avimago_rmd_test_file"
-author: "Avi"
+title: "Factors Impacting Employee Satisfaction"
+author: Hai Wen Chen, Avi Mago, William Marshall, Haochen Song, Siddharth Srinivasan
+  Swamy, Xuying Zhong
 date: "September 25, 2017"
-output: html_document
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
 ---
 
-Alinna testing commit to this file. 
+# Introduction
 
-Test
-```{r}
-print("This is just to test that the GitHub repository is all set up and working in a way that it should :p")
-```
-Test 2 - Second Commit
-```{r}
-print("This is my second commit")
-```
+## The Data Set
 
-Test3-makayla
-```{r}
-print("makayla")
-```
+# Hypothesis 
 
+# Method 
 
-Test 3 - Third Commit
-```{r}
-print("sid")
-```
+# Analysis 
 
-Test 4 - Sophia
-```{r}
-Print("This works ! :) ")
-```
+# Conclusion 
 
