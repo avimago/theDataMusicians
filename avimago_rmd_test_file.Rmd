@@ -117,6 +117,18 @@ ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
 ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
 
 
+#Regression Analysis 
+
+#Creating new variables for regression analysis (Quadratic Variables)
+IBM_sqr->IBM%>%
+mutate(TotalWorkingYearsSqr=TotalWorkingYears**2,TrainingTimesLastYearSqr=TrainingTimesLastYear**2,YearsAtCompanySqr=YearsAtCompany**2,YearsInCurrentRoleSqr=YearsInCurrentRole**2,YearsSinceLastPromotionSqr=YearsSinceLastPromotion**2,YearsWithCurrManagerSqr=YearsWithCurrManager**2)
+
+#Full Model
+glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+EnvironmentSatisfaction+Gender+HourlyRate+JobInvolvement+JobLevel+JobRole+JobSatisfaction+MaritalStatus+MonthlyIncome+MonthlyRate+NumCompaniesWorked+OverTime+PercentSalaryHike+PerformanceRating+RelationshipSatisfaction+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+WorkLifeBalance+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM, family= binomial)
+
+summary(glm, digits = 2)
+
+
 # Conclusion 
 
 
