@@ -91,8 +91,11 @@ JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord
 grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
 ```
 
-
-
+# Statistical Tests
+```{r}
+prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
+```
+The proportion of female staying in the company is 85.20% The proportion of male who stay in the company is 82.00%. So the proportion of male and female who stay in the company is the same according to the proportion test.
 
 # Hypothesis 
 
