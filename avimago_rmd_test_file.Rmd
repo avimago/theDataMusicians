@@ -298,6 +298,43 @@ summary(att_1)
 att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
 summary(att_reg)
 
+#Reg Models Equation
+
+#Full Model
+
+full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobInvolvement+JobLevel+JobRole+MaritalStatus+MonthlyIncome+MonthlyRate+NumCompaniesWorked+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+ 
+options(digits=19)
+summary(full_model_reg)
+
+#Company_control_model
+
+company_control_model<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+JobInvolvement+JobLevel+JobRoles+MonthlyIncome+MonthlyRate+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+(YearsSinceLastPromotionSqr)+YearsWithCurrManager+Ye(arsWithCurrManagerSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+options(digits=19)
+summary(company_control_model)
+
+#out_of_control_model
+
+out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+(TotalWorkingYearsSqr)+YearsAtCompany+(YearsAtCompanySqr),data = IBM_Sqr, family= binomial)
+
+options(digits=5)
+summary(out_of_control_model)
+
+
+#Visualising Regression
+ 
+#Trying to visualize The generalized linear models created above
+
+install.packages("visreg")
+library("visreg")
+
+data("IBM_Sqr", package="MASS")
+fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
+visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
+visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
+
+
 # Conclusion 
 
 
