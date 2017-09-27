@@ -72,6 +72,22 @@ totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","Rel
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 
+This dataset covered 1470 employees and according to the pie chart, male make up 2/3 of the total employees.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
+```
+
+It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(gridExtra)
+DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
+
+JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
+
+grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
+```
 
 # Hypothesis 
 
