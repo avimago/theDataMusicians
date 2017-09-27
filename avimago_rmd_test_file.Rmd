@@ -82,7 +82,7 @@ kable(totals, caption = "Satisfaction to the Job in Total")
 
 # Method 
 
-<<<<<<< HEAD
+
 ## Analysis 
 
 # Correlation Test with TotalSatisfaction relative factors
@@ -190,7 +190,7 @@ As we can see from the above test, age, monthly income and years in current role
 
 
 
-=======
+
 # Analysis
 
 #Converting variables into Factor Variables
@@ -297,8 +297,6 @@ summary(att_1)
 #Avi, this is the test regression
 att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
 summary(att_reg)
-
->>>>>>> 9cbf55e8d63b23e293a193ca2374544759c17678
 
 # Conclusion 
 
