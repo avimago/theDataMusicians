@@ -142,6 +142,16 @@ out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Ge
 options(digits=5)
 summary(out_of_control_model)
 
+#Trying to visualize The generalized linear models created above
+install.packages("visreg")
+library("visreg")
+
+
+data("IBM_Sqr", package="MASS")
+fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
+visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
+visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
+
 
 # Conclusion 
 
