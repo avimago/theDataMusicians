@@ -4,9 +4,11 @@ author: Hai Wen Chen, Avi Mago, William Marshall, Haochen Song, Siddharth Sriniv
   Swamy, Xuying Zhong
 date: "September 25, 2017"
 output:
+  html_document:
+    toc: yes
   pdf_document:
-    toc: true
-    number_sections: true
+    number_sections: yes
+    toc: yes
 ---
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -89,11 +91,265 @@ JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord
 grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
 ```
 
+
+
+
 # Hypothesis 
 
 # Method 
 
-# Analysis 
+
+## Analysis 
+
+# Correlation Test with TotalSatisfaction relative factors
+In this part, in order to seek what is the suitable regression function, we are going to find out how does each potential variables correlated with total satisfaction for employees. The factors need to be inspected and the resaons of selecting them are listed below.
+```{r,echo=FALSE,message=FALSE}
+library(knitr)
+Variables<-c("Age","MonthlyIncom","DistanceFromHome","PercentSalaryHike","YearsInCurrentRole")
+Reasons<-c("Expectations of employees may differ according to their ages",
+           "Money might be the most direct reason for job satisfaction",
+           "Time taken travel to work may affect total satisfaction",
+           "Consider about furture development, people may be more happy with high Percent Salary Hike",
+           "Long time for repeating the same task might decrease the interest on work")
+a<-data.frame(Variables,Reasons)
+
+knitr::kable(a)
+
+```
+
+
+###1) Age
+```{r}
+cor.test(IBM[,"Age"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(0.91674,4)
+df<-1468
+P_value<-0.3594
+Correlation<-round(0.02391978  ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+##The table may not be seen on R markdown here, but can be seen when knited!
+```
+
+As shown above, the correlation between age and total satisfaction are around 0.024, there is little relationship between them. Older employees might be more used to the company environment and youger emplloyees seems have higher expectation.
+
+###2) MonthlyIncome
+
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"MonthlyIncome"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(-0.66132,4)
+df<-1468
+P_value<-0.5085
+Correlation<-round(0.01725778 ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+Similar to age, although there is evidence shown on p-value that the null hypothesis is significant, the 0.017 correlation value still implies a little positive relationship between monthly income and satisfaction. However, the increase on monthly income doesn't influence that much as what we expected before.
+
+###3) Distance from Home
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"DistanceFromHome"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(-0.63048,4)
+df<-1468
+P_value<-0.5285
+Correlation<-round(-0.01645315  ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+It can be observed from the above test that total satisafaction is negatively and weakly connected with distance from home. In this case, time cost on travel to work is not a reason to be considered for employees when measuring about satisafaction level.
+
+###4) Percent Salary Hike
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"PercentSalaryHike"],IBM[,"TotalSatisfaction"])
+```
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(-1.1118,4)
+df<-1468
+P_value<-0.2664
+Correlation<-round(-0.02900669 ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+Similar as the privous factor, with -0.029 correlation value, increasing on percent salary hike may have no impact on changing employee's satisfaction.
+
+###5) Years In Current Role
+```{r,echo=FALSE,message=FALSE}
+cor.test(IBM[,"YearsInCurrentRole"],IBM[,"TotalSatisfaction"])
+```
+
+```{r,echo=FALSE,message=FALSE}
+Test_statistic<-round(0.68209,4)
+df<-1468
+P_value<-0.4953
+Correlation<-round(0.01779959 ,4)
+corr<-data.frame(Test_statistic,df,P_value,Correlation)
+library(knitr)
+knitr::kable(corr,caption="Summary")
+```
+
+Different from what we expected before, years in current role shows weak but positive correlation with total satisfaction, which implies the longer employees working on the same role the higher satisfaction they have. 
+
+###Conclusion for the correlation test
+As we can see from the above test, age, monthly income and years in current role are higher relative with total satisafaction compared with other two factors. However, their correlation value are still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
+
+
+
+
+# Analysis
+
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+
+
+#Plots
+#Training Time Last Year (Yes vs No)
+ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+
+#Job Satisfaction (Y vs N)
+ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
+
+#Department wise Attrition (Y vs N)
+ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
+
+#Monthly Income Density (Y vs N)
+ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
+
+#Years At Company Density (Y vs N)
+ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+
+#Years Since Last Promotion (Y vs N)
+ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+
+#Business Travel (Y vs N)
+ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+
+#Work Life Balance (Y vs N)
+ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+
+
+# Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
+
+#First, regressing Attrition on department. Not statistically significant
+
+Regression Analysis.
+
+The motivation for the following model is to provide the company with a clear indication of the factors significantly contributing to an employee leaving the company. We will then split the model into two: one for those factors the company can directly influence in order to decrease its attrition rate, the other outlaying those which are of a more personal nature and where the company has limited scope for interference. That is not to say that those findings have no value, though. The information uncovered here provides the company with a broad insight into the morale across the demographics of its workforce and could provide motivation for the design of programmes or events that subtly engage those with a higher probability of searching for another job.
+
+Hence, we propose a model which treats Attrition as the dependent, or explanatory, variable. Our earlier analysis describes Attrition as a categorical variable and for this reason we used the method of logistic regression to build the model. This method provides the analyst with a percentage chance of an event occuring, where '1' is coded to mean there is a high chance that the employee will leave and '0' means the opposite. We use the particular method of logit smoothing to restrict our output between these levels. Incidentally, this also serves as a basis for a scale on which to compare the probability of individual employees leaving. For instance, if the company wanted to know the reasons behind people of or over a certain age leaving the company, then, controlling for age, it is possible to compare whether one employee is likely to leave over another based on their other key characteristics. From here, the company can direct effort into those areas to improve the chances of that employee choosing to stay at the company. 
+
+The process and logic of determining the model is such. First, we use a maximum-likelihood estimation (MLE) to quantify the effect of any particular variable on the probablity of an employee leaving the company. It must be noted that MLE assumes an aspymtotically normal distribution and thus invokes the use of the Wald statistic to test whether or not that particular variable's effect is statistically significant: our null hypothesis is always that the variable has no effect. We set a 95% confidence interval for the model. If the Wald statistic is deemed to be more extreme than this level, then the null hypothesis is rejected and we accept that the alternative hypothesis that there is a statistically significant relationship between those two variables; that the independent variable goes some way in explaining the probablity that an employee leaves. The z-value is then called and calculated to provide the probablilty that the null hypothesis is true in a value named the p-value. If the p-value is below 5% then we reject the null hypothesis.
+
+z score to compute the p value
+mean = E(Y)=np
+var = np(1-p)
+
+
+
+Wald test
+z-test
+
+```{r}
+att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
+z.test(x, y = DistanceFromHome, Attrition) #Can't figure out
+summary(att_1)
+```
+
+#Second, regressing Attrition on DistanceFromHome
+att_2 <- glm(formula = Attrition ~ DistanceFromHome, data = IBM, family=binomial)
+summary(att_2)
+
+#Third, regressing Education on Attrition (NOT DONE YET)
+att_3 <- glm(formula = Attrition ~ CONVERTEducation, data = IBM, family=binomial)
+summary(att_3)
+
+#Fourth, regressing Age on Attrition
+att_4 <- glm(formula = Attrition ~ Age, data = IBM, family=binomial)
+summary(att_4)
+
+#Fifth, regressing Hourly Rate on Attrition. Not statistically significant
+att_5 <- glm(formula = Attrition ~ HourlyRate, data = IBM, family=binomial)
+summary(att_1)
+
+#Sixth, regressing Monthly Income on Attrition.
+att_6 <- glm(formula = Attrition ~ MonthlyIncome, data = IBM, family=binomial)
+summary(att_6)
+
+#Seventh, regressing YearsAtCompany on Attrition
+att_7 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+summary(att_7)
+
+#Eighth, regressing PercentSalaryHike on Attrition
+att_8 <- glm(formula = Attrition ~ PercentSalaryHike, data = IBM, family=binomial)
+summary(att_1)
+
+#Nine, regressing NumCompaniesWorked on Attrition. Not statistically significant.
+att_9 <- glm(formula = Attrition ~ NumCompaniesWorked, data = IBM, family=binomial)
+summary(att_1)
+
+#Something.
+tot_sat_11 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+summary(att_1)
+
+#Avi, this is the test regression
+att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
+summary(att_reg)
+
+#Reg Models Equation
+
+#Full Model
+
+full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobInvolvement+JobLevel+JobRole+MaritalStatus+MonthlyIncome+MonthlyRate+NumCompaniesWorked+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+ 
+options(digits=19)
+summary(full_model_reg)
+
+#Company_control_model
+
+company_control_model<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+JobInvolvement+JobLevel+JobRoles+MonthlyIncome+MonthlyRate+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+(YearsSinceLastPromotionSqr)+YearsWithCurrManager+Ye(arsWithCurrManagerSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+options(digits=19)
+summary(company_control_model)
+
+#out_of_control_model
+
+out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+(TotalWorkingYearsSqr)+YearsAtCompany+(YearsAtCompanySqr),data = IBM_Sqr, family= binomial)
+
+options(digits=5)
+summary(out_of_control_model)
+
+
+#Visualising Regression
+ 
+#Trying to visualize The generalized linear models created above
+
+install.packages("visreg")
+library("visreg")
+
+data("IBM_Sqr", package="MASS")
+fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
+visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
+visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
+
 
 # Conclusion 
 
