@@ -74,14 +74,34 @@ totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","Rel
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 
+This dataset covered 1470 employees and according to the pie chart, male make up 2/3 of the total employees.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
+```
 
+It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(gridExtra)
+DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
 
+JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
 
+grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
+```
+
+# Statistical Tests
+```{r}
+prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
+```
+The proportion of female staying in the company is 85.20% The proportion of male who stay in the company is 82.00%. So the proportion of male and female who stay in the company is the same according to the proportion test.
 
 # Hypothesis 
 
 # Method 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 # Analysis
@@ -161,6 +181,8 @@ In terms of work life balance, around 30 percent of employees choose to leave th
 So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel and WorkLifeBalance are three most significant factors that have strong impact on employees attrition choices. 
 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
+
+=======
 
 
 # Correlation Test with TotalSatisfaction relative factors
@@ -283,43 +305,127 @@ As we can see from the above correlation test, years in current role is more rel
 
 
 
+# Analysis
+
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+
+
+
+
+
+
+
 # Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
 
 #First, regressing Attrition on department. Not statistically significant
+
+Regression Analysis.
+
+The motivation for the following model is to provide the company with a clear indication of the factors significantly contributing to an employee leaving the company. We will then split the model into two: one for those factors the company can directly influence in order to decrease its attrition rate, the other outlaying those which are of a more personal nature and where the company has limited scope for interference. That is not to say that those findings have no value, though. The information uncovered here provides the company with a broad insight into the morale across the demographics of its workforce and could provide motivation for the design of programmes or events that subtly engage those with a higher probability of searching for another job.
+
+Hence, we propose a model which treats Attrition as the dependent, or explanatory, variable. Our earlier analysis describes Attrition as a categorical variable and for this reason we used the method of logistic regression to build the model. This method provides the analyst with a percentage chance of an event occuring, where '1' is coded to mean there is a high chance that the employee will leave and '0' means the opposite. We use the particular method of logit smoothing to restrict our output between these levels. Incidentally, this also serves as a basis for a scale on which to compare the probability of individual employees leaving. For instance, if the company wanted to know the reasons behind people of or over a certain age leaving the company, then, controlling for age, it is possible to compare whether one employee is likely to leave over another based on their other key characteristics. From here, the company can direct effort into those areas to improve the chances of that employee choosing to stay at the company. 
+
+The process and logic of determining the model is such. First, we use a maximum-likelihood estimation (MLE) to quantify the effect of any particular variable on the probablity of an employee leaving the company. It must be noted that MLE assumes an aspymtotically normal distribution and thus invokes the use of the Wald statistic to test whether or not that particular variable's effect is statistically significant: our null hypothesis is always that the variable has no effect. We set a 95% confidence interval for the model. If the Wald statistic is deemed to be more extreme than this level, then the null hypothesis is rejected and we accept that the alternative hypothesis that there is a statistically significant relationship between those two variables; that the independent variable goes some way in explaining the probablity that an employee leaves. The z-value is then called and calculated to provide the probablilty that the null hypothesis is true in a value named the p-value. If the p-value is below 5% then we reject the null hypothesis.
+
+z score to compute the p value
+mean = E(Y)=np
+var = np(1-p)
+
+
+
+Wald test
+z-test
+
+```{r}
 att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
+z.test(x, y = DistanceFromHome, Attrition) #Can't figure out
+summary(att_1)
+```
 
 #Second, regressing Attrition on DistanceFromHome
 att_2 <- glm(formula = Attrition ~ DistanceFromHome, data = IBM, family=binomial)
+summary(att_2)
 
 #Third, regressing Education on Attrition (NOT DONE YET)
 att_3 <- glm(formula = Attrition ~ CONVERTEducation, data = IBM, family=binomial)
+summary(att_3)
 
 #Fourth, regressing Age on Attrition
 att_4 <- glm(formula = Attrition ~ Age, data = IBM, family=binomial)
+summary(att_4)
 
 #Fifth, regressing Hourly Rate on Attrition. Not statistically significant
 att_5 <- glm(formula = Attrition ~ HourlyRate, data = IBM, family=binomial)
+summary(att_1)
 
 #Sixth, regressing Monthly Income on Attrition.
 att_6 <- glm(formula = Attrition ~ MonthlyIncome, data = IBM, family=binomial)
+summary(att_6)
 
 #Seventh, regressing YearsAtCompany on Attrition
 att_7 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+summary(att_7)
 
 #Eighth, regressing PercentSalaryHike on Attrition
 att_8 <- glm(formula = Attrition ~ PercentSalaryHike, data = IBM, family=binomial)
+summary(att_1)
 
 #Nine, regressing NumCompaniesWorked on Attrition. Not statistically significant.
 att_9 <- glm(formula = Attrition ~ NumCompaniesWorked, data = IBM, family=binomial)
+summary(att_1)
 
 #Something.
 tot_sat_11 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
+summary(att_1)
 
 #Avi, this is the test regression
 att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
 summary(att_reg)
 
->>>>>>> 9cbf55e8d63b23e293a193ca2374544759c17678
+#Reg Models Equation
+
+#Full Model
+
+full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobInvolvement+JobLevel+JobRole+MaritalStatus+MonthlyIncome+MonthlyRate+NumCompaniesWorked+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+ 
+options(digits=19)
+summary(full_model_reg)
+
+#Company_control_model
+
+company_control_model<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+JobInvolvement+JobLevel+JobRoles+MonthlyIncome+MonthlyRate+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+(YearsSinceLastPromotionSqr)+YearsWithCurrManager+Ye(arsWithCurrManagerSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+options(digits=19)
+summary(company_control_model)
+
+#out_of_control_model
+
+out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+(TotalWorkingYearsSqr)+YearsAtCompany+(YearsAtCompanySqr),data = IBM_Sqr, family= binomial)
+
+options(digits=5)
+summary(out_of_control_model)
+
+
+#Visualising Regression
+ 
+#Trying to visualize The generalized linear models created above
+
+install.packages("visreg")
+library("visreg")
+
+data("IBM_Sqr", package="MASS")
+fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
+visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
+visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
 
 
 
