@@ -4,11 +4,12 @@ author: Hai Wen Chen, Avi Mago, William Marshall, Haochen Song, Siddharth Sriniv
   Swamy, Xuying Zhong
 date: "September 25, 2017"
 output:
-  html_document:
-    toc: yes
-  pdf_document:
-    number_sections: yes
-    toc: yes
+  pdf_document: null
+  html_document: null
+number_sections: yes
+csl: harvard-imperial-college-london.csl
+bibliography: bibliography_MathStats.bib
+toc: yes
 ---
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -17,6 +18,7 @@ colnames(IBM)[1] <- "Age"
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
 ```
 # Introduction
+test referencing @medina2012job
 ## The relationship between Attrition and Total Satisfaction
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -347,7 +349,7 @@ z-test
 
 ```{r}
 att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
-z.test(x, y = DistanceFromHome, Attrition) #Can't figure out
+#z.test(x, y = DistanceFromHome, Attrition) #Can't figure out
 summary(att_1)
 ```
 
@@ -427,12 +429,9 @@ fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= bin
 visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
 visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
 
-
-
-
-
-
 # Conclusion 
+
+# Bibliography
 
 
 
