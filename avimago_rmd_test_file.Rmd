@@ -106,15 +106,16 @@ The proportion of female staying in the company is 85.20% The proportion of male
 # Analysis
 
 #Converting variables into Factor Variables
+```{r, echo=FALSE}
 IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
 IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
 IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
 IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
 IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
 IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
 IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
 IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+```
 
 
 #Plots
