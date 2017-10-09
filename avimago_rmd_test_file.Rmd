@@ -30,8 +30,6 @@ csl: harvard-imperial-college-london.csl
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
-<<<<<<< HEAD
-=======
 library(corrgram)
 library(knitr)
 library(visreg)
@@ -40,7 +38,6 @@ library(visreg)
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
->>>>>>> 73ccf4da76706aaad1c9869425394ff31c047c4b
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 
@@ -54,11 +51,8 @@ someone said this @ponsano2013quantitative
 
 ## The relationship between Attrition and Total Satisfaction
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(dplyr)
-
 IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
-library(ggplot2)
 Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
 ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
@@ -67,7 +61,6 @@ ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
 personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
                                    "EducationField", "Gender", "MaritalStatus",
                                    "NumCompaniesWorked","TotalWorkingYears"),
@@ -83,7 +76,6 @@ kable(personal, caption = "Personal Information")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
 jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
                                  "JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike",
                                  "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
@@ -97,7 +89,6 @@ kable(jobinfo, caption = "Job Information")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
 totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
                                 "TotalSatisfaction"),
                      Type=c("integer","integer","integer","integer","integer"),
@@ -110,10 +101,8 @@ kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-library(ggplot2)
 ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
 
-library(gridExtra)
 DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
 
 JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
@@ -129,6 +118,8 @@ This dataset covered 1470 employees and male make up 2/3 of the total employees.
 
 ```{r echo=FALSE}
 ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+```{r echo=FALSE}
 IBM <- filter(IBM, JobRole!="Manager")
 ```
 The folling two graphs show the distribution of monthly income and we can see that most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16033.55, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
@@ -141,7 +132,10 @@ grid.arrange(sal1,sal2, ncol=2)
 #mean(IBM[IBM[,"JobRole"]=="Healthcare Representative","MonthlyIncome"])
 #mean(IBM[IBM[,"JobRole"]=="Sales Executive","MonthlyIncome"])
 ```
+# Strength and Limitations
+This dataset represents the ties between a variety of information of an employee and the attrition. We can prevent attrition by optimizing the relative factors. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
 
+However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean, so even if we find them significant, we don’t know what can be done to reduce attrition. Secondly, this dataset only covered 1470 employees, which is sometimes not large enough to produce a pervasive result. Moreover, certain job roles only appear in specific department, which means job role is dependent on department, so we have to analyse the dataset according to the department. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are all factors rather than continuous scores, so it will be hard for us to run linear regression on them.
 
 # Statistical Tests
 ```{r echo=TRUE}
