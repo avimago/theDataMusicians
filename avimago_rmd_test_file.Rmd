@@ -103,9 +103,6 @@ The proportion of female staying in the company is 85.20% The proportion of male
 
 # Method 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 # Analysis
 
 #Converting variables into Factor Variables
@@ -183,8 +180,6 @@ In terms of work life balance, around 30 percent of employees choose to leave th
 So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel and WorkLifeBalance are three most significant factors that have strong impact on employees attrition choices. 
 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
-
-=======
 
 
 # Correlation Test with TotalSatisfaction relative factors
@@ -432,7 +427,3 @@ visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attritio
 # Conclusion 
 
 # Bibliography
-
-
-
-
