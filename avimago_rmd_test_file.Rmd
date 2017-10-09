@@ -26,11 +26,11 @@ library(gridExtra)
 library(corrgram)
 library(knitr)
 library(visreg)
-
 ```
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+# import data
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 
@@ -39,13 +39,29 @@ IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorke
 ```
 
 # Introduction
-someone said this @ponsano2013quantitative
+
+## The Attrition Problem 
+The competition for employers to acquire and retain talents is just as furious as that for candidates to get into an organization. Moreover, employers have to bare the different costs associated with employee attrition. Example cost implications are the costs required to recruit a new person to cover the role, the man-hours, or wage, lost due to lower efficiency of new recruits, and training costs. An article on the Robert Half website estimated that it takes on average 28 days to recruit for an open position @robertHalf. In some cases, it might even takes months before the human resources (HR) team can hire someone suitable to fill the gap. According to Schawbel, “The biggest priority, and concern, for business leaders in 2017 will be retaining employees in a competitive talent marketplace.” @fortuneEmployersWorry 
+
+### Importance of Retention
+Retention is growingly concerning for organizations in the private and public sector. Recently the NHS announced a million-pound spending to drive recruitment @churchillKnight. Employees come and go is becoming an inevitable trend in Europe and the US. Whilst it may benefit the employees, it undoubtedly levied considerable costs on the employers. Research from Bersin Deloitte reported that the talent acquisition spending of US companies increased by 7% on average from 2013 to $4000 per hire in 2014 @Cision. As recruiters struggle, many reach out to consultancies for help. Consultancy.uk revealed that the HR consulting market grew by 4.8% from 2014 to 2015. It can be seen that increasing retention is important @ConsultancyUK. Hence, we are exploring an HR data set to analyze variables that can affect attrition. 
+ 
+ 
+### Increasing Retention 
+
+To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. ![Attrition Factors from indeed.com](indeedShowMeTheMoney.png) Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
+
+
+## Report Objective
+We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to know which factor in the dataset shows notable effect on attrition. 
+
+
+
+
 
 
 ## The relationship between Attrition and Total Satisfaction
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(dplyr)
-
 IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
 library(ggplot2)
@@ -57,7 +73,7 @@ ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
+
 personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
                                    "EducationField", "Gender", "MaritalStatus",
                                    "NumCompaniesWorked","TotalWorkingYears"),
@@ -73,7 +89,7 @@ kable(personal, caption = "Personal Information")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
+
 jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
                                  "JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike",
                                  "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
@@ -87,7 +103,7 @@ kable(jobinfo, caption = "Job Information")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
+
 totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
                                 "TotalSatisfaction"),
                      Type=c("integer","integer","integer","integer","integer"),
@@ -100,10 +116,10 @@ kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-library(ggplot2)
+
 ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
 
-library(gridExtra)
+
 DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
 
 JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
@@ -127,14 +143,11 @@ prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
 ```
 The proportion of female staying in the company is 85.20% The proportion of male who stay in the company is 82.00%. So the proportion of male and female who stay in the company is the same according to the proportion test.
 
-# Hypothesis 
-
 # Method 
 
 # Analysis
-
-#Converting variables into Factor Variables
 ```{r, echo=FALSE}
+#Converting variables into Factor Variables
 IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
 IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
 IBM$JobLevel<-ordered(IBM$JobLevel,levels=c(NA,"1","2","3","4"))
@@ -221,14 +234,13 @@ First, we create a correlation table which creates a general idea on all correla
 IBM <-mutate(IBM,combined_satisfaction =JobSatisfaction+WorkLifeBalance)
 new_IBM<-select(IBM,-(Attrition),-(BusinessTravel),-(Department),-(EducationField),-(Gender),-(JobRole),-(MaritalStatus),-(OverTime),-(EnvironmentSatisfaction),-(JobSatisfaction),-(WorkLifeBalance),-(TotalSatisfaction),-(RelationshipSatisfaction),-(JobLevel))
 
-library(corrgram)
 corrgram(new_IBM,main="Correlogram of IBM data set")
 
 ```
 
 In the correlogram, the darker shade implies the higher correlation with each other. The last line indicates all correlations among combined satisfactions and other variables. The factors (with darker shade) need to be inspected and the potential resaons for selecting them are listed below.
 ```{r,echo=FALSE,message=FALSE}
-library(knitr)
+
 Variables<-c("MonthlyIncome","PercentSalaryHike","PerformanceRating","TrainingTimesLastYear","YearsInCurrentRole")
 Reasons<-c("Money might be the most direct reason for job satisfaction",
            "Consider about furture development, people may be more happy with high Percent Salary Hike",
@@ -244,7 +256,7 @@ knitr::kable(a)
 ##1) Monthly Income
 ```{r}
 
-cor.test(IBM[,"MonthlyIncome"],IBM[,"combined_satisfaction"])
+#cor.test(IBM[,"MonthlyIncome"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.40687,4)
@@ -262,7 +274,7 @@ As shown above, the correlation between Monthly Income and combined satisfaction
 ##2) Percent Salary Hike
 
 ```{r,echo=FALSE,message=FALSE}
-cor.test(IBM[,"PercentSalaryHike"],IBM[,"combined_satisfaction"])
+#cor.test(IBM[,"PercentSalaryHike"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.58278,4)
@@ -270,7 +282,7 @@ df<-1468
 P_value<-0.5601
 Correlation<-round(0.01520856  ,4)
 corr<-data.frame(Test_statistic,df,P_value,Correlation)
-library(knitr)
+
 knitr::kable(corr,caption="Summary")
 ```
 
@@ -278,7 +290,7 @@ Similar to the previous test, it can be observed that combined satisafaction is 
 
 ##3) Performance Rating
 ```{r,echo=FALSE,message=FALSE}
-cor.test(IBM[,"PerformanceRating"],IBM[,"combined_satisfaction"])
+#cor.test(IBM[,"PerformanceRating"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round( 0.12842,4)
@@ -286,7 +298,7 @@ df<-1468
 P_value<-0.8978
 Correlation<-round(0.003351649 ,4)
 corr<-data.frame(Test_statistic,df,P_value,Correlation)
-library(knitr)
+
 knitr::kable(corr,caption="Summary")
 ```
 
@@ -294,7 +306,7 @@ With correlation value close to zero and 0.89 p-value, we can conclude that ther
 
 ##4) Training Times Last Year
 ```{r,echo=FALSE,message=FALSE}
-cor.test(IBM[,"TrainingTimesLastYear"],IBM[,"combined_satisfaction"])
+#cor.test(IBM[,"TrainingTimesLastYear"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.39726,4)
@@ -310,7 +322,7 @@ Similar as the privous factor, with 0.01 correlation value, increasing on tranin
 
 ##5) Years In Current Role
 ```{r,echo=FALSE,message=FALSE}
-cor.test(IBM[,"YearsInCurrentRole"],IBM[,"combined_satisfaction"])
+#cor.test(IBM[,"YearsInCurrentRole"],IBM[,"combined_satisfaction"])
 ```
 
 ```{r,echo=FALSE,message=FALSE}
@@ -327,28 +339,6 @@ Compared with other factors tested above, years in current role shows stronger p
 
 ##Conclusion for the correlation test
 As we can see from the above correlation test, years in current role is more relative with combined satisafaction(JobSatisFaction & WorkLifeBalance) compared with others. This implies years in current role may be an indirect variable contributing to employees' attrition choice. However, its correlation value is still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
-
-
-
-
-# Analysis
-
-#Converting variables into Factor Variables
-IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
-IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
-IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
-IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
-IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
-IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
-IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
-
-
-
-
-
-
 
 # Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
 
