@@ -18,7 +18,19 @@ csl: harvard-imperial-college-london.csl
 \pagebreak
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+# load required packages 
+# if not installed, use install.packages("package_name") to install package
 library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(corrgram)
+library(knitr)
+library(visreg)
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 
