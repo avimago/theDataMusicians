@@ -4,11 +4,12 @@ author: Hai Wen Chen, Avi Mago, William Marshall, Haochen Song, Siddharth Sriniv
   Swamy, Xuying Zhong
 date: "September 25, 2017"
 output:
-  html_document:
-    toc: yes
-  pdf_document:
-    number_sections: yes
-    toc: yes
+  pdf_document: null
+  html_document: null
+number_sections: yes
+csl: harvard-imperial-college-london.csl
+bibliography: bibliography_MathStats.bib
+toc: yes
 ---
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -17,6 +18,7 @@ colnames(IBM)[1] <- "Age"
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
 ```
 # Introduction
+test referencing @medina2012job
 ## The relationship between Attrition and Total Satisfaction
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -101,9 +103,6 @@ The proportion of female staying in the company is 85.20% The proportion of male
 
 # Method 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 # Analysis
 
 #Converting variables into Factor Variables
@@ -181,8 +180,6 @@ In terms of work life balance, around 30 percent of employees choose to leave th
 So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel and WorkLifeBalance are three most significant factors that have strong impact on employees attrition choices. 
 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
-
-=======
 
 
 # Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
@@ -347,7 +344,7 @@ z-test
 
 ```{r}
 att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
-z.test(x, y = DistanceFromHome, Attrition) #Can't figure out
+#z.test(x, y = DistanceFromHome, Attrition) #Can't figure out
 summary(att_1)
 ```
 
@@ -427,13 +424,6 @@ fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= bin
 visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
 visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
 
-
-
-
-
-
 # Conclusion 
 
-
-
-
+# Bibliography
