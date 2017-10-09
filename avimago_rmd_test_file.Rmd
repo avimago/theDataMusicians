@@ -116,6 +116,9 @@ ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
 #Work Life Balance (Y vs N)
 ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
 
+#Marital Status (Y vs N)
+ggplot(IBM,aes(x=MaritalStatus,fill=Attrition))+geom_bar(position="fill")
+
 
 # Conclusion 
 
