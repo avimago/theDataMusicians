@@ -185,7 +185,7 @@ However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all
 =======
 
 
-# Correlation Test with TotalSatisfaction relative factors
+# Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
 
 As stated in the previous analysis part, in this correlation part, we will continue exploring the relationship between combined satisfaction (JobSatisFaction & WorkLifeBalance) and other variables, seeking potential indirect fators contributed to employees' attrition choices.
 
