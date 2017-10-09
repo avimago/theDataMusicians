@@ -1,24 +1,35 @@
 ---
 title: "Factors Impacting Employee Satisfaction"
-author: Hai Wen Chen, Avi Mago, William Marshall, Haochen Song, Siddharth Srinivasan
-  Swamy, Xuying Zhong
+author: H W Chen, A Mago, W Marshall, H Song, S S
+  Swamy, X Zhong
 date: "September 25, 2017"
 output:
-  pdf_document: null
-  html_document: null
-number_sections: yes
-csl: harvard-imperial-college-london.csl
+  pdf_document: 
+    number_sections: yes
+    toc: yes
+  html_document:
+    number_sections: yes
+    toc: yes
 bibliography: bibliography_MathStats.bib
-toc: yes
+csl: harvard-imperial-college-london.csl
+
 ---
+
+\pagebreak
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
-colnames(IBM)[1] <- "Age"
+colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
+
+# columns such as employee number are not relevant or where all entries are the same, keep only relevant columns with varying inputs
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
 ```
+
 # Introduction
-test referencing @medina2012job
+someone said this @ponsano2013quantitative
+
+
 ## The relationship between Attrition and Total Satisfaction
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -183,7 +194,7 @@ So far we have plotted eight graphs aiming to find out the relationship between 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
 
 
-# Correlation Test with TotalSatisfaction relative factors
+# Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
 
 As stated in the previous analysis part, in this correlation part, we will continue exploring the relationship between combined satisfaction (JobSatisFaction & WorkLifeBalance) and other variables, seeking potential indirect fators contributed to employees' attrition choices.
 
@@ -426,5 +437,8 @@ visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of At
 visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
 
 # Conclusion 
+
+
+\pagebreak
 
 # Bibliography
