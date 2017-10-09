@@ -30,6 +30,7 @@ library(visreg)
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+
 # import data
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
@@ -162,66 +163,66 @@ IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 #Plots
 In this part, we are going to plot graphs between attrition and other different factors in order to explore their relationships and further understand which factor actually affect employees' choice on Attrition.
 
-##Training Time Last Year (Yes vs No)
+##Training Time Last Year / Job Satisfaction(Yes vs No)
 ```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+
+TrainingTimes<-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+
+JobSatisf<- ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
+
+grid.arrange(TrainingTimes,JobSatisf, ncol=2)
 ```
 
-The bar chart above shows a roughly decreasing trend between the training time and the amount of attrition, the longer training time leads to fewer attrition. In addition, about 75 percent of employees keep stay at the company without being affected by this factor. 
+The left bar chart above shows a roughly decreasing trend between the training time and the amount of attrition, the longer training time leads to fewer attrition. In addition, about 75 percent of employees keep stay at the company without being affected by this factor. 
 
-##Job Satisfaction (Y vs N)
+Similar to traing time, JobSatisfaction (the right one) is also a factor that influece people's decision on whether to leave or not. As job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%, which indicates improving job satisfaction may help prevent employees from leaving the company.
+
+##Department wise Attrition / Monthly Income Density (Y vs N)
 ```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
-```
-Similar to traing time, JobSatisfaction is also a factor that influece people's decision on whether to leave or not. As job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%, which indicates improving job satisfaction may help prevent employees from leaving the company.
+Department<-ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
 
-##Department wise Attrition (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
-```
-Based on the above bar chart, it can be concluded that Research & Development department is the most stable department with only around 14% of employees leaving, while the proporion in Sales and Human Resources Departments are about 10% higher than it.We can mainly focus on this two departments' analysis if the company do not have enough money for improvement.
+MonthlyIncome<- ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(adjust=1.5, position="fill")
 
+grid.arrange(Department,MonthlyIncome, ncol=2)
 
-##Monthly Income Density (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
 ```
 
-As we can see from this density plot on monthly income, it is highly right skewed, which implies most employees' incomes are aound 2500 per month. There is a sharp decrease after the peak reached at 2500, additionally, the density of employees who choose to leave is higher than who want stay when their salary are lower than 4000($). 
+Based on the left bar chart, it can be concluded that Research & Development department is the most stable department with only around 14% of employees leaving, while the proporion in Sales and Human Resources Departments are about 10% higher than it.We can mainly focus on this two departments' analysis if the company do not have enough money for improvement.
 
-##Years At Company Density (Y vs N)
+As we can see from the right density plot on monthly income, when monthly income increase from 5000 to 20000, the proportion of no attrition increases as well. There is strong evidence showing increasing on monthly income will affect employees' choices on attrition.
+
+##Years At Company Density / Years Since Last Promotion(Y vs N)
 ```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+YACompany<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+
+YSlastpro<-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+
+grid.arrange(YACompany,YSlastpro, ncol=2)
+
 ```
 
-In term of years employees have stayed at company, the percentage of attrition smoothly goes down during the first 20 years.However, in the following 20 years, it then inscreases to around 90 percent with fluctuations in between. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
+In term of years employees have stayed at company, the percentage of attrition smoothly goes down during the first 20 years. However, in the following 20 years, it then inscreases to around 90 percent with fluctuations in between. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
 
-##Years Since Last Promotion (Y vs N)
+The bar chart on the right shows there is no significant relationship between years since last promotion and the attrition. The propotion for leaving fluctuates around 20 percent.Two special years occur at year 8 and 12 with no attrion.
+
+##Business Travel / Work Life Balance(Y vs N)
 ```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+BusinessTravel<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+
+WorklifeBalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+
+grid.arrange(BusinessTravel,WorklifeBalance, ncol=2)
 ```
 
-The bar chart above shows there is no significant relationship between years since last promotion and the attrition. The propotion for leaving fluctuates around 20 percent.Two special years occur at year 8 and 12 with no attrion.
+According to the left business travel bar chart, only 8 percent of employees want to leave company if they are in non-travel roles, but high attrition occurs at about 25 percent when they need travel frequently, which indicates that business travel may have positive impact on company's attrition.
 
-##Business Travel (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
-```
-
-In this business travel bar chart, only 8 percent of employees want to leave company if they are in non-travel roles, but high attrition occurs at about 25 percent when they need travel frequently, which indicates that business travel may have positive impact on company's attrition.
-
-##Work Life Balance (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
-```
-
-In terms of work life balance, around 30 percent of employees choose to leave the company if they have a bad balance. However with the level increases to 2 and more, the attrition percentage drops dramatically to half of level 1. Therefore, improvement of work life balance can also be a significant factor.
+In terms of work life balance (graph on the left), around 30 percent of employees choose to leave the company if they have a bad balance. However with the level increases to 2 and more, the attrition percentage drops dramatically to half of level 1. Therefore, improvement of work life balance can also be a significant factor.
 
 ##Colusion for Attrition plot analysis
 
-So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel and WorkLifeBalance are three most significant factors that have strong impact on employees attrition choices. 
+So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel, monthly income and WorkLifeBalance are four most significant factors that have strong impact on employees attrition choices. 
 
-However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
+Furthermore, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
 
 
 # Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
@@ -230,9 +231,9 @@ As stated in the previous analysis part, in this correlation part, we will conti
 
 First, we create a correlation table which creates a general idea on all correlations and we will then select potential variable for further correlation tests.
 
-```{r,out.width="100%",fig.align="center",echo=FALSE,message=FALSE}
+```{r,fig.align="center",echo=FALSE,message=FALSE}
 IBM <-mutate(IBM,combined_satisfaction =JobSatisfaction+WorkLifeBalance)
-new_IBM<-select(IBM,-(Attrition),-(BusinessTravel),-(Department),-(EducationField),-(Gender),-(JobRole),-(MaritalStatus),-(OverTime),-(EnvironmentSatisfaction),-(JobSatisfaction),-(WorkLifeBalance),-(TotalSatisfaction),-(RelationshipSatisfaction),-(JobLevel))
+new_IBM<-select(IBM,-(Attrition),-(BusinessTravel),-(Department),-(EducationField),-(Gender),-(JobRole),-(MaritalStatus),-(OverTime),-(EnvironmentSatisfaction),-(JobSatisfaction),-(WorkLifeBalance),-(TotalSatisfaction),-(RelationshipSatisfaction),-(JobLevel),-(DailyRate),-(MonthlyRate))
 
 corrgram(new_IBM,main="Correlogram of IBM data set")
 
