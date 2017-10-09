@@ -1,18 +1,16 @@
 ---
 title: "Factors Impacting Employee Satisfaction"
-author: H W Chen, A Mago, W Marshall, H Song, S S
-  Swamy, X Zhong
+author: "H W Chen, A Mago, W Marshall, H Song, S S Swamy, X Zhong"
 date: "September 25, 2017"
 output:
-  pdf_document: 
-    number_sections: yes
-    toc: yes
   html_document:
     number_sections: yes
     toc: yes
-bibliography: bibliography_MathStats.bib
+  pdf_document:
+    number_sections: yes
+    toc: yes
 csl: harvard-imperial-college-london.csl
-
+bibliography: bibliography_MathStats.bib
 ---
 
 \pagebreak
@@ -50,7 +48,7 @@ Retention is growingly concerning for organizations in the private and public se
  
 ### Increasing Retention 
 
-To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. ![Attrition Factors from indeed.com](indeedShowMeTheMoney.png) Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
+To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. ![Attrition Factors from Indeed](indeedShowMeTheMoney.png) Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
 
 
 ## Report Objective
@@ -136,7 +134,19 @@ This dataset covered 1470 employees and male make up 2/3 of the total employees.
 
 ```{r echo=FALSE}
 ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 45,hjust = 1))
+IBM <- filter(IBM, JobRole!="Manager")
 ```
+The folling two graphs show the distribution of monthly income and we can see that most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16033.55, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
+```{r}
+sal1 <- ggplot(IBM,aes(MonthlyIncome))+geom_density()
+#ggplot(IBM,aes("" ,MonthlyIncome))+geom_boxplot()
+sal2 <- ggplot(IBM,aes(JobRole,MonthlyIncome))+geom_boxplot()+theme(axis.text = element_text(angle = 45,hjust = 1))
+grid.arrange(sal1,sal2, ncol=2)
+#mean(IBM[IBM[,"JobRole"]=="Research Director","MonthlyIncome"])
+#mean(IBM[IBM[,"JobRole"]=="Healthcare Representative","MonthlyIncome"])
+#mean(IBM[IBM[,"JobRole"]=="Sales Executive","MonthlyIncome"])
+```
+
 
 # Statistical Tests
 ```{r echo=TRUE}
@@ -147,6 +157,7 @@ The proportion of female staying in the company is 85.20% The proportion of male
 # Method 
 
 # Analysis
+<<<<<<< HEAD
 ```{r, echo=FALSE}
 #Converting variables into Factor Variables
 IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
@@ -159,6 +170,8 @@ IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1",
 IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 ```
 
+=======
+>>>>>>> d14bedea357984d0307b416fc50a676ff3180693
 
 #Plots
 In this part, we are going to plot graphs between attrition and other different factors in order to explore their relationships and further understand which factor actually affect employees' choice on Attrition.
@@ -340,6 +353,20 @@ Compared with other factors tested above, years in current role shows stronger p
 
 ##Conclusion for the correlation test
 As we can see from the above correlation test, years in current role is more relative with combined satisafaction(JobSatisFaction & WorkLifeBalance) compared with others. This implies years in current role may be an indirect variable contributing to employees' attrition choice. However, its correlation value is still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
+
+```{r, echo=FALSE}
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c(NA,"1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+#IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+```
+# Analysis
+
 
 # Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
 
