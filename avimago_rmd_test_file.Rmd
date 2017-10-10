@@ -52,9 +52,7 @@ We would like to test whether the above is true from the dataset we obtained fro
 
 # Method
 
-According to the two objectives, the analysis will start with plotting and observing the distribution of the different variables. By observation, discrepancy between the distribution of employees who left and those who haven't is a hint that the variable is an attrition influencer.  
-
-
+According to the two objectives, the analysis will start with plotting and observing the distribution of the different variables. By observation, discrepancy between the distribution of employees who left and those who haven't is a hint that the variable is an attrition influencer. Hypothesizing that the variable is related to attrition, a hypothesis test can be conducted to determine the significance of the relationship. Lastly, regression models can be compiled to predict attrition and to explore the influencer’s contribution to the likelihood of leave. 
 
 ## About the Data Set- Descriptive Statistics
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -169,7 +167,21 @@ IBM <- filter(IBM, JobRole!="Manager")
 ```
 
 ## Distribution With Respect to Attrition
-In this section, the distribution of the different variable are plotted and observed. The aim is to discover discrpancies between the employees that left the company, which has 'yes' in the 'Attrition column'. 
+In this section, the distribution of the different variable are plotted and observed. The aim is to discover discrepancies between the employees that left the company, which has 'yes' in the 'Attrition column'. 
+
+### Overall
+```{r distributionPlots, echo=FALSE,message=FALSE}
+p_train<-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+p_jsat<-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
+p_role<-ggplot(IBM,aes(x=JobRole,fill=Attrition))+geom_bar(position="fill")
+p_income<-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
+p_years<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+p_yrpromo<-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+grid.arrange(p_train, p_jsat, p_role, p_income, ncol=2)
+```
+
 
 ###Training Time Last Year (Yes vs No)
 ```{r,echo=FALSE,message=FALSE}
