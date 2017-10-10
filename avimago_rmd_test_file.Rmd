@@ -186,7 +186,7 @@ IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
 IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
 IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
 IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
-
+IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
 ```
 
 #Plots
@@ -520,7 +520,8 @@ or_glm(data = IBM_Sqr, model = model_reg_performance, incr = list(TotalSatisfact
 #Full Model
 
 
-full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobLevel+JobRole+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobLevel+JobRole+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
  
 or_glm(data = IBM_Sqr, model = full_model_reg, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5, DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1, CI = 0.95))
 
@@ -555,7 +556,6 @@ data("IBM_Sqr", package="MASS")
 fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
 visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
 visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition", rug = 2)
-
 
 
 # Conclusion 
