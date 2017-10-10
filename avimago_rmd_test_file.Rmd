@@ -24,6 +24,8 @@ library(gridExtra)
 library(corrgram)
 library(knitr)
 library(visreg)
+library(stargazer)
+library(oddsratio)
 ```
 
 
@@ -461,7 +463,6 @@ summary(att_1)
 
 
 ```{r}
-library(oddsratio)
 
 IBM_Sqr<-IBM%>%mutate(TotalWorkingYearsSqr=TotalWorkingYears**2,TrainingTimesLastYearSqr=TrainingTimesLastYear**2,YearsAtCompanySqr=YearsAtCompany**2,YearsInCurrentRoleSqr=YearsInCurrentRole**2,YearsSinceLastPromotionSqr=YearsSinceLastPromotion**2,YearsWithCurrManagerSqr=YearsWithCurrManager**2)
 ```
@@ -471,11 +472,12 @@ IBM_Sqr<-IBM%>%mutate(TotalWorkingYearsSqr=TotalWorkingYears**2,TrainingTimesLas
 #Simple Models
 
 
-simple_model_1<-glm(Attrition~BusinessTravel+DistanceFromHome+Gender+JobInvolvement+NumCompaniesWorked+OverTime+TotalWorkingYears+(TotalWorkingYearsSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+simple_model_1<-glm(Attrition~BusinessTravel+DistanceFromHome+NumCompaniesWorked+OverTime+TotalWorkingYears+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+stargazer(list(simple_model_1), type = "text")
 
 summary(simple_model_1)
 or_glm(data = IBM_Sqr, model = simple_model_1, 
-       incr = list(TotalSatisfaction = 1,CI = 0.95))
+       incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5,CI = 0.95))
 
 
 
@@ -505,6 +507,11 @@ or_glm(data = IBM_Sqr, model = full_model_reg_try,
 stargazer(list(simple_model_2,simple_model_3,simple_model_4), type = "text")
 
 
+model_reg_performance<-glm(Attrition~JobInvolvement+OverTime+PercentSalaryHike+PerformanceRating+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+summary(model_reg_performance)
+
+or_glm(data = IBM_Sqr, model = model_reg_performance, incr = list(TotalSatisfaction = 1 , CI = 0.95))
 
 ```
 
@@ -513,9 +520,9 @@ stargazer(list(simple_model_2,simple_model_3,simple_model_4), type = "text")
 #Full Model
 
 
-full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobInvolvement+JobLevel+JobRole+MaritalStatus+MonthlyIncome+MonthlyRate+NumCompaniesWorked+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobLevel+JobRole+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
  
-
+or_glm(data = IBM_Sqr, model = full_model_reg, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5, DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1, CI = 0.95))
 
 #Company_control_model
 
