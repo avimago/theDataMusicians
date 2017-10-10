@@ -38,7 +38,26 @@ IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorke
 ```
 
 # Introduction
-someone said this @ponsano2013quantitative
+
+## The Attrition Problem 
+The competition for employers to acquire and retain talents is just as furious as that for candidates to get into an organization. Moreover, employers have to bare the different costs associated with employee attrition. Example cost implications are the costs required to recruit a new person to cover the role, the man-hours, or wage, lost due to lower efficiency of new recruits, and training costs. An article on the Robert Half website estimated that it takes on average 28 days to recruit for an open position @robertHalf. In some cases, it might even takes months before the human resources (HR) team can hire someone suitable to fill the gap. According to Schawbel, “The biggest priority, and concern, for business leaders in 2017 will be retaining employees in a competitive talent marketplace.” @fortuneEmployersWorry 
+
+### Importance of Retention
+Retention is growingly concerning for organizations in the private and public sector. Recently the NHS announced a million-pound spending to drive recruitment @churchillKnight. Employees come and go is becoming an inevitable trend in Europe and the US. Whilst it may benefit the employees, it undoubtedly levied considerable costs on the employers. Research from Bersin Deloitte reported that the talent acquisition spending of US companies increased by 7% on average from 2013 to $4000 per hire in 2014 @Cision. As recruiters struggle, many reach out to consultancies for help. Consultancy.uk revealed that the HR consulting market grew by 4.8% from 2014 to 2015. It can be seen that increasing retention is important @ConsultancyUK. Hence, we are exploring an HR data set to analyze variables that can affect attrition. 
+ 
+ 
+### Increasing Retention 
+
+To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. 
+
+![Attrition Factors from Indeed](indeedShowMeTheMoney.png) 
+
+Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
+
+
+## Report Objective
+We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to know which factor in the dataset shows notable effect on attrition. 
+
 
 
 ## The relationship between Attrition and Total Satisfaction
