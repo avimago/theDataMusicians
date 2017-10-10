@@ -469,8 +469,7 @@ IBM_Sqr<-IBM%>%mutate(TotalWorkingYearsSqr=TotalWorkingYears**2,TrainingTimesLas
 
 
 ```{r}
-#Simple Models
-
+#EXPERIMENTAL (This is not final - Please seee the two code chunks below for regression models)
 
 simple_model_1<-glm(Attrition~BusinessTravel+DistanceFromHome+NumCompaniesWorked+OverTime+TotalWorkingYears+TotalSatisfaction,data = IBM_Sqr, family= binomial)
 stargazer(list(simple_model_1), type = "text")
@@ -479,14 +478,11 @@ summary(simple_model_1)
 or_glm(data = IBM_Sqr, model = simple_model_1, 
        incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5,CI = 0.95))
 
-
-
 simple_model_2<-glm(Attrition~TotalSatisfaction,data = IBM_Sqr, family= binomial)
 summary(simple_model_2)
 
 or_glm(data = IBM_Sqr, model = simple_model_2, 
        incr = list(TotalSatisfaction = 1, CI = 0.95))
-
 
 simple_model_3<-glm(Attrition~JobInvolvement,data = IBM_Sqr, family= binomial)
 summary(simple_model_3)
@@ -498,45 +494,87 @@ simple_model_4<-glm(Attrition~OverTime,data = IBM_Sqr, family= binomial)
 summary(simple_model_4)
 
 
-full_model_reg_try<-glm(Attrition~BusinessTravel+OverTime,data = IBM_Sqr, family= binomial)
+simple_model_plot_1<-glm(Attrition~MonthlyIncome,data = IBM_Sqr, family= binomial)
  
-or_glm(data = IBM_Sqr, model = full_model_reg_try, 
-       incr = list(OverTime = 1 , CI = 0.95))
+or_glm(data = IBM_Sqr, model = simple_model_plot_1, 
+       incr = list(MonthlyIncome = 1000, CI = 0.95))
 
+ggplot(data=IBM, aes(y = Attrition, x = MonthlyIncome)) +geom_point()
 
 stargazer(list(simple_model_2,simple_model_3,simple_model_4), type = "text")
 
 
-model_reg_performance<-glm(Attrition~JobInvolvement+OverTime+PercentSalaryHike+PerformanceRating+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
-
-summary(model_reg_performance)
-
-or_glm(data = IBM_Sqr, model = model_reg_performance, incr = list(TotalSatisfaction = 1 , CI = 0.95))
 
 ```
+
+```{r}
+#Plotting simple Logit models to see the impat of continuos variables on probability of Attrition
+
+predictdata<-IBM
+predictdata$Attrition<-factor(predictdata$Attrition,levels=c("No","Yes"),labels = c(0,1))
+
+#Monthly Income vs Attrition
+
+simple_model_plot_1<-glm(Attrition~MonthlyIncome,data = IBM_Sqr, family= binomial)
+
+xv <- seq(min(IBM$MonthlyIncome), max(IBM$MonthlyIncome),10)
+yv <- predict(simple_model_plot_1,list(MonthlyIncome = xv), type = "response")
+
+ggplot()+labs(x="Monthly Income", y="Probability of Attrition")+geom_smooth(aes(x=xv,y=yv))
+
+#Distance From Home vs Attrition
+
+simple_model_plot_2<-glm(Attrition~DistanceFromHome,data = IBM_Sqr, family= binomial)
+
+xv1 <- seq(min(IBM$DistanceFromHome), max(IBM$DistanceFromHome),1)
+yv1 <- predict(simple_model_plot_2,list(DistanceFromHome = xv1), type = "response")
+
+ggplot()+geom_smooth(aes(x=xv1,y=yv1))+labs(x="Distance From Home", y="Probability of Attrition")
+
+
+#Total Satisfaction From Home vs Attrition
+
+simple_model_plot_3<-glm(Attrition~TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+xv2 <- seq(min(IBM$TotalSatisfaction), max(IBM$TotalSatisfaction),1)
+yv2 <- predict(simple_model_plot_3,list(TotalSatisfaction = xv2), type = "response")
+
+ggplot()+geom_smooth(aes(x=xv2,y=yv2))+labs(x="Total Satisfaction", y="Probability of Attrition")
+
+```
+
 
 
 ```{r}
-#Full Model
 
+# Regression Models with Odds Calculation(Main)
 
-full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobLevel+JobRole+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
- 
-or_glm(data = IBM_Sqr, model = full_model_reg, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5, DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1, CI = 0.95))
+#Full Model 
+full_model_reg_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+EducationField+HourlyRate+Gender+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
 
-#Company_control_model
+#Full Model Odds Ratio Calculation
+or_glm(data = IBM_Sqr, model = full_model_reg_v1, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1,YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, Gender=1 , MartialStatus = 1, CI = 0.95))
 
-company_control_model<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+JobInvolvement+JobLevel+JobRole+MonthlyIncome+MonthlyRate+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+(YearsSinceLastPromotionSqr)+YearsWithCurrManager+(YearsWithCurrManagerSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+#Model with only variables that a company can control
+company_control_model_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
 
+#Odds Ratio Calculation for the model with only variables that a company can control
+or_glm(data = IBM_Sqr, model = company_control_model_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TrainingTimesLastYear = 1, YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, CI = 0.95))
 
+#Model with only variables that a company can't control
+out_of_control_v1<-glm(Attrition~+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+TotalSatisfaction,data = IBM_Sqr, family= binomial)
 
-#out_of_control_model
+#Odds Ratio Calculation for the model with only variables that a company can't control
+or_glm(data = IBM_Sqr, model = out_of_control_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , TotalWorkingYears = 1, MartialStatus = 1, CI = 0.95))
 
-out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+(TotalWorkingYearsSqr)+YearsAtCompany+(YearsAtCompanySqr),data = IBM_Sqr, family= binomial)
+#Model with only performance variables
+model_reg_performance<-glm(Attrition~OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction+BusinessTravel,data = IBM_Sqr, family= binomial)
 
-
-
+#Odds Ratio Calculation for model with only performance variables
+or_glm(data = IBM_Sqr, model = model_reg_performance, incr = list(TotalSatisfaction = 1 ,PercentSalaryHike = 1,TrainingTimesLastYear=1, YearsAtCompany = 1, YearsInCurrentRole = 1, YearsSinceLastPromotion = 1, YearsWithCurrManager = 1,  CI = 0.95))
 ```
+
+
 
 
 ```{r}
