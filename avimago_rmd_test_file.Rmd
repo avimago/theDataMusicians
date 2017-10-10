@@ -48,10 +48,15 @@ Indeed.com, an American job search engine, published a report on job tenure show
 
 
 ## Report Objective
-We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to know which factor in the dataset shows notable effect on attrition. 
+We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to help companies retain their valuable employees. To do this, there are two problems to solve. Firstly, identify the most impactful influencers. Secondly, produce a model that can give the likelihood of an employee leaving. The model will highlight to the company who they risk losing. Then the employer can put in extra effort into preventing the high risk employees from leaving. 
 
 # Method
-## Dataset Description and Descriptive Statistics
+
+According to the two objectives, the analysis will start with plotting and observing the distribution of the different variables. By observation, discrepancy between the distribution of employees who left and those who haven't is a hint that the variable is an attrition influencer.  
+
+
+
+## About the Data Set- Descriptive Statistics
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
@@ -60,7 +65,7 @@ colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
 ```
 
-This is a cross-sectional dataset of survey answers and objective information regarding the employees of IBM. It has a total of 1470 observations (employees) across 35 variables (information about the employee). The variables can be boardly divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
+This is a cross-sectional dataset of survey answers and objective information regarding the employees of IBM. It has a total of 1470 observations (employees) across 35 variables (information about the employee). The variables can be boardly divided into three groups: personal information, job specific information, and subjective ratings. 
 
 In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we filtered out these four colomns to make our analysis more efficient. 
 
@@ -78,6 +83,8 @@ IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
 In addition, the dataset has inputs that a meant to be factors or levels but are logged as integers. For example, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee. The numbers respectively means 'below college', 'college', 'bachelor', 'master' and 'doctor'. To catogrize the education level, we change the integers incicating the education level into factors. The same approach was taken for similar variables, including 'JobLevel', 'StockOptionLevel' and 'TrainingTimeLastYear'. 
 
+Variables related to employee personal information are shown in the following table. 
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
@@ -94,6 +101,8 @@ personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
 kable(personal, caption = "Personal Information")
 ```
 
+Variables relating to the employee's job at the company includes the following. 
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
@@ -108,52 +117,36 @@ jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Depar
 kable(jobinfo, caption = "Job Information")
 ```
 
+Lastly, subjective ratings that are possibly obtained from a survey are captured by the following variables. 
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
-                                "TotalSatisfaction"),
-                     Type=c("integer","integer","integer","integer","integer"),
+totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance"),
+                     Type=c("factor","factor","factor","factor"),
                      Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
                                    "Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
                                    "Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
-                                   "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')",
-                                   "The sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance "))
+                                   "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')"))
+
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 
 This dataset covered 1470 employees and according to the pie chart, male make up 2/3 of the total employees.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
 ```
 
-It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-
-
-ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
-
-DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
-
-JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
-
-grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
-
-
-ggplot(IBM,aes(JobRole))+geom_bar()+facet_wrap(~Department)+theme(axis.text = element_text(angle = 45,hjust = 1))
-ggplot(IBM,aes(Department))+geom_bar()+facet_wrap(~JobRole)+theme(axis.text = element_text(angle = 45,hjust = 1))
-
-```
-
-This dataset covered 1470 employees and male make up 2/3 of the total employees.It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. Apart from the "Manager" role, the other roles only appear in one department. Therefore, when we do regressions on the attrition, we will do this according to different departments because there is a dependency between job role and department. We found that the attrition rate of managers is about 4.9%, which is far below the total attrition rate (16.1%). So we can filter out managers and focus on other roles because they are not the group we need to focus on.
+It includes information about employees from 3 different departments in 7 different roles. Two thirds of the recorded employees are from the Research & Development department, employees from Sales took up most of the remaining part. Only 63 employees recorded were from Human Resources department. Apart from the "Manager" role, each role corresponds to a specific department. Therefore, when we do regression analysis on attrition, we will need to consider the interdependency between roles and deparment. 
 
 ```{r echo=FALSE}
 ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
-```{r echo=FALSE}
-IBM <- filter(IBM, JobRole!="Manager")
-```
-The folling two graphs show the distribution of monthly income and we can see that most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16033.55, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
+The graph demonstrates that managers are the odd one out in this data set. There is a very small number of managers and the manager role is the only cross-department role. To reduce noise and increase chances of dicovering trends, data related to the manager role is filtered out during analysis. 
+
+Before filtering, the attrition rate for managers and non-managers were investigated. It is found that amongst survey managers only 4.9% left the company compared to 16.1% for employees in non-manager roles. Further supporting the assumption that manager is a very different group compared to non-mangers. 
+
+A report done by indeed.com showed that one of the most impactful contributor to attrition is compensation. Hence two graphs are ploted to show the distribution of monthly income. Most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16034, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
 ```{r echo=FALSE}
 sal1 <- ggplot(IBM,aes(MonthlyIncome))+geom_density()
 #ggplot(IBM,aes("" ,MonthlyIncome))+geom_boxplot()
@@ -163,12 +156,17 @@ grid.arrange(sal1,sal2, ncol=2)
 #mean(IBM[IBM[,"JobRole"]=="Healthcare Representative","MonthlyIncome"])
 #mean(IBM[IBM[,"JobRole"]=="Sales Executive","MonthlyIncome"])
 ```
-## Strength and Limitations
-This dataset represents the ties between a variety of information of an employee and the attrition. We can prevent attrition by optimizing the relative factors. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
 
-However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean, so even if we find them significant, we don’t know what can be done to reduce attrition. Secondly, this dataset only covered 1470 employees, which is sometimes not large enough to produce a pervasive result. Moreover, certain job roles only appear in specific department, which means job role is dependent on department, so we have to analyse the dataset according to the department. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are all factors rather than continuous scores, so it will be hard for us to run linear regression on them.
+## Strength and Limitations
+This dataset contains information of employees that stayed and of those who left. It allows us to compare and reveal difference in trend between those who decided to leave and those who stayed. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
+
+However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean. As a result, our team can not give suggestions even if we found that it affects attrition. Secondly, this dataset only covered 1470 employees, which is not large enough to produce an extremely persuasive result. Moreover, technically we can only narrow down to which factors are related to attrition. With cross-sectional data it is hard to prove causalty. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are categorical, which requires a different type of regression compared to the standard linear regression taught in the lectures.
 
 # Analysis
+
+```{r echo=FALSE}
+IBM <- filter(IBM, JobRole!="Manager")
+```
 
 ## Distribution With Respect to Attrition
 In this section, the distribution of the different variable are plotted and observed. The aim is to discover discrpancies between the employees that left the company, which has 'yes' in the 'Attrition column'. 
