@@ -435,6 +435,8 @@ fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= bin
 visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
 visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
 
+
+
 # Conclusion 
 
 
