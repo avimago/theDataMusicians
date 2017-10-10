@@ -538,7 +538,6 @@ out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Ge
 
 ```
 
-library(stargazer)
 
 ```{r}
 stargazer(list(full_model_reg,company_control_model,out_of_control_model), type = "text", digits = 2)
