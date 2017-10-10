@@ -19,6 +19,17 @@ csl: harvard-imperial-college-london.csl
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(corrgram)
+library(knitr)
+library(visreg)
+library(stargazer)
+library(oddsratio)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 
@@ -27,16 +38,33 @@ IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorke
 ```
 
 # Introduction
-someone said this @ponsano2013quantitative
+
+## The Attrition Problem 
+The competition for employers to acquire and retain talents is just as furious as that for candidates to get into an organization. Moreover, employers have to bare the different costs associated with employee attrition. Example cost implications are the costs required to recruit a new person to cover the role, the man-hours, or wage, lost due to lower efficiency of new recruits, and training costs. An article on the Robert Half website estimated that it takes on average 28 days to recruit for an open position @robertHalf. In some cases, it might even takes months before the human resources (HR) team can hire someone suitable to fill the gap. According to Schawbel, “The biggest priority, and concern, for business leaders in 2017 will be retaining employees in a competitive talent marketplace.” @fortuneEmployersWorry 
+
+### Importance of Retention
+Retention is growingly concerning for organizations in the private and public sector. Recently the NHS announced a million-pound spending to drive recruitment @churchillKnight. Employees come and go is becoming an inevitable trend in Europe and the US. Whilst it may benefit the employees, it undoubtedly levied considerable costs on the employers. Research from Bersin Deloitte reported that the talent acquisition spending of US companies increased by 7% on average from 2013 to $4000 per hire in 2014 @Cision. As recruiters struggle, many reach out to consultancies for help. Consultancy.uk revealed that the HR consulting market grew by 4.8% from 2014 to 2015. It can be seen that increasing retention is important @ConsultancyUK. Hence, we are exploring an HR data set to analyze variables that can affect attrition. 
+ 
+ 
+### Increasing Retention 
+
+To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. 
+
+![Attrition Factors from Indeed](indeedShowMeTheMoney.png) 
+
+Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
+
+
+## Report Objective
+We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to know which factor in the dataset shows notable effect on attrition. 
+
 
 
 ## The relationship between Attrition and Total Satisfaction
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(dplyr)
 
 IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
 
-library(ggplot2)
 Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
 ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 ```
@@ -45,7 +73,7 @@ ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
 This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
+
 personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
                                    "EducationField", "Gender", "MaritalStatus",
                                    "NumCompaniesWorked","TotalWorkingYears"),
@@ -61,7 +89,7 @@ kable(personal, caption = "Personal Information")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
+
 jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
                                  "JobLevel","JobRole", "MonthlyIncome", "MonthlyRate", "OverTime", "PercentSalaryHike",
                                  "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
@@ -75,7 +103,6 @@ kable(jobinfo, caption = "Job Information")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(knitr)
 totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
                                 "TotalSatisfaction"),
                      Type=c("integer","integer","integer","integer","integer"),
@@ -94,15 +121,47 @@ ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "
 ```
 
 It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(ggplot2)
-library(gridExtra)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+
+ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
+
 DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
 
 JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
 
 grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
+
+
+ggplot(IBM,aes(JobRole))+geom_bar()+facet_wrap(~Department)+theme(axis.text = element_text(angle = 45,hjust = 1))
+ggplot(IBM,aes(Department))+geom_bar()+facet_wrap(~JobRole)+theme(axis.text = element_text(angle = 45,hjust = 1))
+
 ```
+
+This dataset covered 1470 employees and male make up 2/3 of the total employees.It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. Apart from the "Manager" role, the other roles only appear in one department. Therefore, when we do regressions on the attrition, we will do this according to different departments because there is a dependency between job role and department. We found that the attrition rate of managers is about 4.9%, which is far below the total attrition rate (16.1%). So we can filter out managers and focus on other roles because they are not the group we need to focus on.
+
+```{r echo=FALSE}
+ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+
+```{r echo=FALSE}
+IBM <- filter(IBM, JobRole!="Manager")
+```
+The folling two graphs show the distribution of monthly income and we can see that most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16033.55, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
+```{r}
+sal1 <- ggplot(IBM,aes(MonthlyIncome))+geom_density()
+#ggplot(IBM,aes("" ,MonthlyIncome))+geom_boxplot()
+sal2 <- ggplot(IBM,aes(JobRole,MonthlyIncome))+geom_boxplot()+theme(axis.text = element_text(angle = 45,hjust = 1))
+grid.arrange(sal1,sal2, ncol=2)
+#mean(IBM[IBM[,"JobRole"]=="Research Director","MonthlyIncome"])
+#mean(IBM[IBM[,"JobRole"]=="Healthcare Representative","MonthlyIncome"])
+#mean(IBM[IBM[,"JobRole"]=="Sales Executive","MonthlyIncome"])
+```
+# Strength and Limitations
+This dataset represents the ties between a variety of information of an employee and the attrition. We can prevent attrition by optimizing the relative factors. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
+
+However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean, so even if we find them significant, we don’t know what can be done to reduce attrition. Secondly, this dataset only covered 1470 employees, which is sometimes not large enough to produce a pervasive result. Moreover, certain job roles only appear in specific department, which means job role is dependent on department, so we have to analyse the dataset according to the department. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are all factors rather than continuous scores, so it will be hard for us to run linear regression on them.
 
 # Statistical Tests
 ```{r}
@@ -116,6 +175,8 @@ The proportion of female staying in the company is 85.20% The proportion of male
 
 # Analysis
 
+=======
+```{r, echo=FALSE}
 #Converting variables into Factor Variables
 IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
 IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
@@ -123,13 +184,14 @@ IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
 IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
 IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
 IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
-IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
 IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
 IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
+```
 
 #Plots
 In this part, we are going to plot graphs between attrition and other different factors in order to explore their relationships and further understand which factor actually affect employees' choice on Attrition.
+
 
 ##Training Time Last Year (Yes vs No)
 ```{r,echo=FALSE,message=FALSE}
@@ -395,45 +457,105 @@ summary(att_1)
 tot_sat_11 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binomial)
 summary(att_1)
 
-#Avi, this is the test regression
-att_reg <- glm(formula = Attrition ~ DistanceFromHome + Age + MonthlyIncome + YearsAtCompany + NumCompaniesWorked, data = IBM, family=binomial)
-summary(att_reg)
+
 
 #Reg Models Equation
 
+
+```{r}
+
+IBM_Sqr<-IBM%>%mutate(TotalWorkingYearsSqr=TotalWorkingYears**2,TrainingTimesLastYearSqr=TrainingTimesLastYear**2,YearsAtCompanySqr=YearsAtCompany**2,YearsInCurrentRoleSqr=YearsInCurrentRole**2,YearsSinceLastPromotionSqr=YearsSinceLastPromotion**2,YearsWithCurrManagerSqr=YearsWithCurrManager**2)
+```
+
+
+```{r}
+#Simple Models
+
+
+simple_model_1<-glm(Attrition~BusinessTravel+DistanceFromHome+NumCompaniesWorked+OverTime+TotalWorkingYears+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+stargazer(list(simple_model_1), type = "text")
+
+summary(simple_model_1)
+or_glm(data = IBM_Sqr, model = simple_model_1, 
+       incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5,CI = 0.95))
+
+
+
+simple_model_2<-glm(Attrition~TotalSatisfaction,data = IBM_Sqr, family= binomial)
+summary(simple_model_2)
+
+or_glm(data = IBM_Sqr, model = simple_model_2, 
+       incr = list(TotalSatisfaction = 1, CI = 0.95))
+
+
+simple_model_3<-glm(Attrition~JobInvolvement,data = IBM_Sqr, family= binomial)
+summary(simple_model_3)
+
+or_glm(data = IBM_Sqr, model = simple_model_3, 
+       incr = list(JobInvolvement = 1, CI = 0.95))
+
+simple_model_4<-glm(Attrition~OverTime,data = IBM_Sqr, family= binomial)
+summary(simple_model_4)
+
+
+full_model_reg_try<-glm(Attrition~BusinessTravel+OverTime,data = IBM_Sqr, family= binomial)
+ 
+or_glm(data = IBM_Sqr, model = full_model_reg_try, 
+       incr = list(OverTime = 1 , CI = 0.95))
+
+
+stargazer(list(simple_model_2,simple_model_3,simple_model_4), type = "text")
+
+
+model_reg_performance<-glm(Attrition~JobInvolvement+OverTime+PercentSalaryHike+PerformanceRating+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+summary(model_reg_performance)
+
+or_glm(data = IBM_Sqr, model = model_reg_performance, incr = list(TotalSatisfaction = 1 , CI = 0.95))
+
+```
+
+
+```{r}
 #Full Model
 
-full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobInvolvement+JobLevel+JobRole+MaritalStatus+MonthlyIncome+MonthlyRate+NumCompaniesWorked+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+
+full_model_reg<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobLevel+JobRole+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+(TotalWorkingYearsSqr)+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsAtCompany+(YearsAtCompanySqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+YearsSinceLastPromotionSqr+YearsWithCurrManager+YearsWithCurrManagerSqr+TotalSatisfaction,data = IBM_Sqr, family= binomial)
  
-options(digits=19)
-summary(full_model_reg)
+or_glm(data = IBM_Sqr, model = full_model_reg, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5, DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1, CI = 0.95))
 
 #Company_control_model
 
-company_control_model<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+JobInvolvement+JobLevel+JobRoles+MonthlyIncome+MonthlyRate+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+(YearsSinceLastPromotionSqr)+YearsWithCurrManager+Ye(arsWithCurrManagerSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+company_control_model<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+JobInvolvement+JobLevel+JobRole+MonthlyIncome+MonthlyRate+OverTime+PercentSalaryHike+PerformanceRating+StockOptionLevel+TrainingTimesLastYear+(TrainingTimesLastYearSqr)+YearsInCurrentRole+(YearsInCurrentRoleSqr)+YearsSinceLastPromotion+(YearsSinceLastPromotionSqr)+YearsWithCurrManager+(YearsWithCurrManagerSqr)+TotalSatisfaction,data = IBM_Sqr, family= binomial)
 
-options(digits=19)
-summary(company_control_model)
+
 
 #out_of_control_model
 
 out_of_control_model<-glm(Attrition~DistanceFromHome+Education+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+(TotalWorkingYearsSqr)+YearsAtCompany+(YearsAtCompanySqr),data = IBM_Sqr, family= binomial)
 
-options(digits=5)
-summary(out_of_control_model)
+
+
+```
+
+library(stargazer)
+
+```{r}
+stargazer(list(full_model_reg,company_control_model,out_of_control_model), type = "text", digits = 2)
+```
+
 
 
 #Visualising Regression
  
 #Trying to visualize The generalized linear models created above
 
-install.packages("visreg")
-library("visreg")
+library(visreg)
 
 data("IBM_Sqr", package="MASS")
 fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
 visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
-visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition")
+visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition", rug = 2)
 
 
 
