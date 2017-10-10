@@ -3,10 +3,10 @@ title: "Factors Impacting Employee Satisfaction"
 author: "H W Chen, A Mago, W Marshall, H Song, S S Swamy, X Zhong"
 date: "September 25, 2017"
 output:
-  html_document:
+  pdf_document:
     number_sections: yes
     toc: yes
-  pdf_document:
+  html_document:
     number_sections: yes
     toc: yes
 csl: harvard-imperial-college-london.csl
@@ -48,27 +48,33 @@ Retention is growingly concerning for organizations in the private and public se
  
 ### Increasing Retention 
 
-To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. ![Attrition Factors from Indeed](indeedShowMeTheMoney.png) Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
+To improve retention, it is necessary to know the influencers of it. There are many factors that can influence employees’ decision on whether to leave the company or not. Obvious ones are financial reward per unit time contributed, benefits and working hours. Depending on what the job entails and the individual, other influencers could include working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. 
+
+![Attrition Factors from Indeed](indeedShowMeTheMoney.png) 
+
+Indeed.com, an American job search engine, published a report on job tenure showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure.
 
 
 ## Report Objective
 We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to know which factor in the dataset shows notable effect on attrition. 
 
 
-
-
-
-
 ## The relationship between Attrition and Total Satisfaction
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r data cleaning, echo=FALSE, message=FALSE, warning=FALSE}
+# create a new column called TotalSatisfaction 
 IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
-
-library(ggplot2)
-Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
-ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c(NA,"1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 ```
-
-# Dataset Description and Descriptive Statistics
+# Method 
+## Dataset Description and Descriptive Statistics
 This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -137,7 +143,7 @@ ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.
 IBM <- filter(IBM, JobRole!="Manager")
 ```
 The folling two graphs show the distribution of monthly income and we can see that most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16033.55, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
-```{r}
+```{r echo=FALSE}
 sal1 <- ggplot(IBM,aes(MonthlyIncome))+geom_density()
 #ggplot(IBM,aes("" ,MonthlyIncome))+geom_boxplot()
 sal2 <- ggplot(IBM,aes(JobRole,MonthlyIncome))+geom_boxplot()+theme(axis.text = element_text(angle = 45,hjust = 1))
@@ -154,29 +160,14 @@ prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
 ```
 The proportion of female staying in the company is 85.20% The proportion of male who stay in the company is 82.00%. So the proportion of male and female who stay in the company is the same according to the proportion test.
 
-# Method 
+
 
 # Analysis
-<<<<<<< HEAD
-```{r, echo=FALSE}
-#Converting variables into Factor Variables
-IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
-IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$JobLevel,levels=c(NA,"1","2","3","4"))
-IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
-IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
-IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
-IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
-IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
-```
 
-=======
->>>>>>> d14bedea357984d0307b416fc50a676ff3180693
-
-#Plots
+## Distribution With Respect to Attrition
 In this part, we are going to plot graphs between attrition and other different factors in order to explore their relationships and further understand which factor actually affect employees' choice on Attrition.
 
-##Training Time Last Year / Job Satisfaction(Yes vs No)
+### Training Time Last Year / Job Satisfaction(Yes vs No)
 ```{r,echo=FALSE,message=FALSE}
 
 TrainingTimes<-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
@@ -190,7 +181,8 @@ The left bar chart above shows a roughly decreasing trend between the training t
 
 Similar to traing time, JobSatisfaction (the right one) is also a factor that influece people's decision on whether to leave or not. As job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%, which indicates improving job satisfaction may help prevent employees from leaving the company.
 
-##Department wise Attrition / Monthly Income Density (Y vs N)
+### Department wise Attrition / Monthly Income Density (Y vs N)
+
 ```{r,echo=FALSE,message=FALSE}
 Department<-ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
 
@@ -204,7 +196,7 @@ Based on the left bar chart, it can be concluded that Research & Development dep
 
 As we can see from the right density plot on monthly income, when monthly income increase from 5000 to 20000, the proportion of no attrition increases as well. There is strong evidence showing increasing on monthly income will affect employees' choices on attrition.
 
-##Years At Company Density / Years Since Last Promotion(Y vs N)
+###Years At Company Density / Years Since Last Promotion(Y vs N)
 ```{r,echo=FALSE,message=FALSE}
 YACompany<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
 
@@ -218,7 +210,7 @@ In term of years employees have stayed at company, the percentage of attrition s
 
 The bar chart on the right shows there is no significant relationship between years since last promotion and the attrition. The propotion for leaving fluctuates around 20 percent.Two special years occur at year 8 and 12 with no attrion.
 
-##Business Travel / Work Life Balance(Y vs N)
+### Business Travel / Work Life Balance(Y vs N)
 ```{r,echo=FALSE,message=FALSE}
 BusinessTravel<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
 
@@ -231,14 +223,14 @@ According to the left business travel bar chart, only 8 percent of employees wan
 
 In terms of work life balance (graph on the left), around 30 percent of employees choose to leave the company if they have a bad balance. However with the level increases to 2 and more, the attrition percentage drops dramatically to half of level 1. Therefore, improvement of work life balance can also be a significant factor.
 
-##Colusion for Attrition plot analysis
+### Colusion for Distribution Visualization
 
 So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel, monthly income and WorkLifeBalance are four most significant factors that have strong impact on employees attrition choices. 
 
 Furthermore, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
 
 
-# Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
+## Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
 
 As stated in the previous analysis part, in this correlation part, we will continue exploring the relationship between combined satisfaction (JobSatisFaction & WorkLifeBalance) and other variables, seeking potential indirect fators contributed to employees' attrition choices.
 
@@ -267,11 +259,12 @@ knitr::kable(a)
 
 ```
 
-##1) Monthly Income
+### Monthly Income
 ```{r}
-
 #cor.test(IBM[,"MonthlyIncome"],IBM[,"combined_satisfaction"])
 ```
+
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.40687,4)
 df<-1468
@@ -285,11 +278,12 @@ knitr::kable(corr,caption="Summary")
 
 As shown above, the correlation between Monthly Income and combined satisfaction are around 0.01, there is little relationship between them.However, the increase on monthly income doesn't influence that much as what we expected before. High P-value (around 0.68) indicates monthly income may not be a significant factor for combined satisfaction.
 
-##2) Percent Salary Hike
+### Percent Salary Hike
 
 ```{r,echo=FALSE,message=FALSE}
 #cor.test(IBM[,"PercentSalaryHike"],IBM[,"combined_satisfaction"])
 ```
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.58278,4)
 df<-1468
@@ -302,10 +296,11 @@ knitr::kable(corr,caption="Summary")
 
 Similar to the previous test, it can be observed that combined satisafaction is possitively but weakly connected with distance from home. In this case, increasing on percent salary hike may have no impact on changing employee's satisfaction.
 
-##3) Performance Rating
+### Performance Rating
 ```{r,echo=FALSE,message=FALSE}
 #cor.test(IBM[,"PerformanceRating"],IBM[,"combined_satisfaction"])
 ```
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round( 0.12842,4)
 df<-1468
@@ -318,10 +313,11 @@ knitr::kable(corr,caption="Summary")
 
 With correlation value close to zero and 0.89 p-value, we can conclude that there is strongly evidence to reject performance rating as one of the variables for affecting attrition.
 
-##4) Training Times Last Year
+### Training Times Last Year
 ```{r,echo=FALSE,message=FALSE}
 #cor.test(IBM[,"TrainingTimesLastYear"],IBM[,"combined_satisfaction"])
 ```
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.39726,4)
 df<-1468
@@ -334,7 +330,7 @@ knitr::kable(corr,caption="Summary")
 
 Similar as the privous factor, with 0.01 correlation value, increasing on traning time per year still does not have significant impact on combined satisfaction.
 
-##5) Years In Current Role
+### Years In Current Role
 ```{r,echo=FALSE,message=FALSE}
 #cor.test(IBM[,"YearsInCurrentRole"],IBM[,"combined_satisfaction"])
 ```
@@ -351,26 +347,13 @@ knitr::kable(corr,caption="Summary")
 
 Compared with other factors tested above, years in current role shows stronger positive correlation with combined satisfaction, which implies the longer employees working on the same role the higher satisfaction they have. 
 
-##Conclusion for the correlation test
+### Conclusion for Correlation Tests
 As we can see from the above correlation test, years in current role is more relative with combined satisafaction(JobSatisFaction & WorkLifeBalance) compared with others. This implies years in current role may be an indirect variable contributing to employees' attrition choice. However, its correlation value is still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
 
-```{r, echo=FALSE}
-#Converting variables into Factor Variables
-IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
-IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$JobLevel,levels=c(NA,"1","2","3","4"))
-IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
-IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
-#IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
-IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
-IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
-```
-# Analysis
+## Hypothesis Tests
+Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
 
-
-# Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
-
-#First, regressing Attrition on department. Not statistically significant
+###First, regressing Attrition on department. Not statistically significant
 
 Regression Analysis.
 
