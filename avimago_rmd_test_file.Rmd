@@ -16,6 +16,7 @@ bibliography: bibliography_MathStats.bib
 \pagebreak
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+# if package is not installed, use install.packages("library_name") to install
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
@@ -26,19 +27,10 @@ library(stargazer)
 library(oddsratio)
 ```
 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
-colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
-
-# columns such as employee number are not relevant or where all entries are the same, keep only relevant columns with varying inputs
-IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
-```
-
 # Introduction
 
 ## The Attrition Problem 
-The competition for employers to acquire and retain talents is just as furious as that for candidates to get into an organization. Moreover, employers have to bare the different costs associated with employee attrition. Example cost implications are the costs required to recruit a new person to cover the role, the man-hours, or wage, lost due to lower efficiency of new recruits, and training costs. An article on the Robert Half website estimated that it takes on average 28 days to recruit for an open position @robertHalf. In some cases, it might even takes months before the human resources (HR) team can hire someone suitable to fill the gap. According to Schawbel, “The biggest priority, and concern, for business leaders in 2017 will be retaining employees in a competitive talent marketplace.” @fortuneEmployersWorry 
+The competition for employers to acquire and retain talent is just as furious as that for candidates to get into an organization. Moreover, employers have to bare the different costs associated with employee attrition. Example cost implications are the costs required to recruit a new person to cover the role, the man-hours, or wage, lost due to lower efficiency of new recruits, and training costs. An article on the Robert Half website estimated that it takes on average 28 days to recruit for an open position @robertHalf. In some cases, it might even takes months before the human resources (HR) team can hire someone suitable to fill the gap. According to Schawbel, “The biggest priority, and concern, for business leaders in 2017 will be retaining employees in a competitive talent marketplace.” @fortuneEmployersWorry 
 
 ### Importance of Retention
 Retention is growingly concerning for organizations in the private and public sector. Recently the NHS announced a million-pound spending to drive recruitment @churchillKnight. Employees come and go is becoming an inevitable trend in Europe and the US. Whilst it may benefit the employees, it undoubtedly levied considerable costs on the employers. Research from Bersin Deloitte reported that the talent acquisition spending of US companies increased by 7% on average from 2013 to $4000 per hire in 2014 @Cision. As recruiters struggle, many reach out to consultancies for help. Consultancy.uk revealed that the HR consulting market grew by 4.8% from 2014 to 2015. It can be seen that increasing retention is important @ConsultancyUK. Hence, we are exploring an HR data set to analyze variables that can affect attrition. 
@@ -54,21 +46,40 @@ Indeed.com, an American job search engine, published a report on job tenure show
 
 
 ## Report Objective
-We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to know which factor in the dataset shows notable effect on attrition. 
+We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to help companies retain their valuable employees. To do this, there are two problems to solve. Firstly, identify the most impactful influencers. Secondly, produce a model that can give the likelihood of an employee leaving. The model will highlight to the company who they risk losing. Then the employer can put in extra effort into preventing the high risk employees from leaving. 
 
+# Method
 
+According to the two objectives, the analysis will start with plotting and observing the distribution of the different variables. By observation, discrepancy between the distribution of employees who left and those who haven't is a hint that the variable is an attrition influencer. Hypothesizing that the variable is related to attrition, a hypothesis test can be conducted to determine the significance of the relationship. Lastly, regression models can be compiled to predict attrition and to explore the influencer’s contribution to the likelihood of leave. 
 
-## The relationship between Attrition and Total Satisfaction
+## About the Data Set- Descriptive Statistics
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
+colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 
-IBM <-  mutate(IBM, TotalSatisfaction=EnvironmentSatisfaction+JobSatisfaction+RelationshipSatisfaction+WorkLifeBalance)
-
-Att_TotalSat <- select(IBM, Attrition, TotalSatisfaction)
-ggplot(Att_TotalSat,aes(x=Attrition, y=TotalSatisfaction))+geom_boxplot()
+# columns such as employee number are not relevant or where all entries are the same, keep only relevant columns with varying inputs
+IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
 ```
 
-# Dataset Description and Descriptive Statistics
-This dataset described the employees of IBM, providing a total of 1470 observations (employees) and 35 variables (information about the employee). In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we got rid of thses four colomns to make our analysis more efficient. Meanwhile, we added a new colomn called "TotalSatisfaction", which is the sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance. In addition, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee, they mean below college, college, bachelor, master, doctor respectively. To catogrize the education level, we change the integer incicating the level in to factor. We did the same thing to JobLevel, StockOptionLevel and TrainingTimeLastYear. Then the variables can be divided into three groups: Personal Information, Job Information, Satisfaction to the Job in Total.
+This is a cross-sectional dataset of survey answers and objective information regarding the employees of IBM. It has a total of 1470 observations (employees) across 35 variables (information about the employee). The variables can be boardly divided into three groups: personal information, job specific information, and subjective ratings. 
+
+In our analysis, the colomns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so we filtered out these four colomns to make our analysis more efficient. 
+
+```{r, echo=FALSE}
+#Converting variables into Factor Variables
+IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
+IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
+IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
+IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
+IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
+IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
+IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
+
+```
+
+In addition, the dataset has inputs that a meant to be factors or levels but are logged as integers. For example, the Education colomn uses integer between 1 to 5 to refer to the level of education of this employee. The numbers respectively means 'below college', 'college', 'bachelor', 'master' and 'doctor'. To catogrize the education level, we change the integers incicating the education level into factors. The same approach was taken for similar variables, including 'JobLevel', 'StockOptionLevel' and 'TrainingTimeLastYear'. 
+
+Variables related to employee personal information are shown in the following table. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -86,6 +97,8 @@ personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
 kable(personal, caption = "Personal Information")
 ```
 
+Variables relating to the employee's job at the company includes the following. 
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Department","HourlyRate","JobInvolvement",
@@ -100,54 +113,37 @@ jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Depar
 kable(jobinfo, caption = "Job Information")
 ```
 
+Lastly, subjective ratings that are possibly obtained from a survey are captured by the following variables. 
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance",
-                                "TotalSatisfaction"),
-                     Type=c("integer","integer","integer","integer","integer"),
+totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance"),
+                     Type=c("factor","factor","factor","factor"),
                      Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
                                    "Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
                                    "Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
-                                   "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')",
-                                   "The sum of EnvironmentSatisfaction,JobSatisfaction,RelationshipSatisfaction and WorkLifeBalance "))
+                                   "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')"))
+
 kable(totals, caption = "Satisfaction to the Job in Total")
 ```
 
 This dataset covered 1470 employees and according to the pie chart, male make up 2/3 of the total employees.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(ggplot2)
 ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
 ```
 
-It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. 
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-
-
-ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")
-
-DepartmentPlot <- ggplot(IBM, aes(x = factor(""), fill = Department))+geom_bar()+coord_polar(theta = "y")+labs(title = "Department Distribution")+scale_x_discrete("")
-
-JobRolePlot <- ggplot(IBM, aes(x = factor(""), fill = JobRole))+geom_bar()+coord_polar(theta = "y")+labs(title = "Job Role Distribution")+scale_x_discrete("")
-
-grid.arrange(DepartmentPlot, JobRolePlot, ncol=2)
-
-
-ggplot(IBM,aes(JobRole))+geom_bar()+facet_wrap(~Department)+theme(axis.text = element_text(angle = 45,hjust = 1))
-ggplot(IBM,aes(Department))+geom_bar()+facet_wrap(~JobRole)+theme(axis.text = element_text(angle = 45,hjust = 1))
-
-```
-
-This dataset covered 1470 employees and male make up 2/3 of the total employees.It includes information about employees from 3 different departments in 7 different roles. 2/3 of the recorded employees are from Research & Development department, employees from Sales took up most of the remaining part and there are only 63 employees come from Human Resources department recorded in this dataset. Apart from the "Manager" role, the other roles only appear in one department. Therefore, when we do regressions on the attrition, we will do this according to different departments because there is a dependency between job role and department. We found that the attrition rate of managers is about 4.9%, which is far below the total attrition rate (16.1%). So we can filter out managers and focus on other roles because they are not the group we need to focus on.
+It includes information about employees from 3 different departments in 7 different roles. Two thirds of the recorded employees are from the Research & Development department, employees from Sales took up most of the remaining part. Only 63 employees recorded were from Human Resources department. Apart from the "Manager" role, each role corresponds to a specific department. Therefore, when we do regression analysis on attrition, we will need to consider the interdependency between roles and deparment. 
 
 ```{r echo=FALSE}
 ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
+The graph demonstrates that managers are the odd one out in this data set. There is a very small number of managers and the manager role is the only cross-department role. To reduce noise and increase chances of dicovering trends, data related to the manager role is filtered out during analysis. 
+
+Before filtering, the attrition rate for managers and non-managers were investigated. It is found that amongst survey managers only 4.9% left the company compared to 16.1% for employees in non-manager roles. Further supporting the assumption that manager is a very different group compared to non-mangers. 
+
+A report done by indeed.com showed that one of the most impactful contributor to attrition is compensation. Hence two graphs are ploted to show the distribution of monthly income. Most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16034, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
 ```{r echo=FALSE}
-IBM <- filter(IBM, JobRole!="Manager")
-```
-The folling two graphs show the distribution of monthly income and we can see that most employees got salaries between 2500 and 7500. Apart from managers, Research Director has the highest monthly income with an average at 16033.55, Healthcare Representative, Manufacturing Director and Sales Executive earned half as much as Research Director (7528.763, 7295.138 and 6924.279 on average respectively), and employees in other roles got less.
-```{r}
 sal1 <- ggplot(IBM,aes(MonthlyIncome))+geom_density()
 #ggplot(IBM,aes("" ,MonthlyIncome))+geom_boxplot()
 sal2 <- ggplot(IBM,aes(JobRole,MonthlyIncome))+geom_boxplot()+theme(axis.text = element_text(angle = 45,hjust = 1))
@@ -156,24 +152,15 @@ grid.arrange(sal1,sal2, ncol=2)
 #mean(IBM[IBM[,"JobRole"]=="Healthcare Representative","MonthlyIncome"])
 #mean(IBM[IBM[,"JobRole"]=="Sales Executive","MonthlyIncome"])
 ```
-# Strength and Limitations
-This dataset represents the ties between a variety of information of an employee and the attrition. We can prevent attrition by optimizing the relative factors. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
 
-However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean, so even if we find them significant, we don’t know what can be done to reduce attrition. Secondly, this dataset only covered 1470 employees, which is sometimes not large enough to produce a pervasive result. Moreover, certain job roles only appear in specific department, which means job role is dependent on department, so we have to analyse the dataset according to the department. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are all factors rather than continuous scores, so it will be hard for us to run linear regression on them.
+## Strength and Limitations
+This dataset contains information of employees that stayed and of those who left. It allows us to compare and reveal difference in trend between those who decided to leave and those who stayed. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
 
-# Statistical Tests
-```{r}
-prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
-```
-The proportion of female staying in the company is 85.20% The proportion of male who stay in the company is 82.00%. So the proportion of male and female who stay in the company is the same according to the proportion test.
-
-# Hypothesis 
-
-# Method 
+However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean. As a result, our team can not give suggestions even if we found that it affects attrition. Secondly, this dataset only covered 1470 employees, which is not large enough to produce an extremely persuasive result. Moreover, technically we can only narrow down to which factors are related to attrition. With cross-sectional data it is hard to prove causalty. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are categorical, which requires a different type of regression compared to the standard linear regression taught in the lectures.
 
 # Analysis
 
-=======
+
 ```{r, echo=FALSE}
 #Converting variables into Factor Variables
 IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
@@ -184,75 +171,61 @@ IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
 IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
 IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
+
+IBM <- filter(IBM, JobRole!="Manager")
+
 ```
 
-#Plots
-In this part, we are going to plot graphs between attrition and other different factors in order to explore their relationships and further understand which factor actually affect employees' choice on Attrition.
+## Distribution With Respect to Attrition
+In this section, the distribution of the different variable are plotted and observed. The aim is to discover discrepancies between the employees that left the company, which has 'yes' in the 'Attrition column'. 
 
-
-##Training Time Last Year (Yes vs No)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+### Overall
+```{r distributionPlots, echo=FALSE,message=FALSE}
+p_train<-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
+p_jsat<-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
+p_role<-ggplot(IBM,aes(x=JobRole,fill=Attrition))+geom_bar(position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+p_income<-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_histogram(position="fill", binwidth=2500)
+p_years<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
+p_yrpromo<-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
+p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+grid.arrange(p_train, p_jsat, p_role, p_income, ncol=2)
 ```
 
-The bar chart above shows a roughly decreasing trend between the training time and the amount of attrition, the longer training time leads to fewer attrition. In addition, about 75 percent of employees keep stay at the company without being affected by this factor. 
+**Effect of trainings**
+The bar chart for training times shows a rough decreasing trend. In general, more training leads to fewer leaves. However, more than 75 percent of employees stayed at the company despite no training last year. 
 
-##Job Satisfaction (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
-```
+**Effect of job satisfaction**
 Similar to traing time, JobSatisfaction is also a factor that influece people's decision on whether to leave or not. As job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%, which indicates improving job satisfaction may help prevent employees from leaving the company.
 
-##Department wise Attrition (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
-```
+**Percentage leave with respect to job role**
 Based on the above bar chart, it can be concluded that Research & Development department is the most stable department with only around 14% of employees leaving, while the proporion in Sales and Human Resources Departments are about 10% higher than it.We can mainly focus on this two departments' analysis if the company do not have enough money for improvement.
 
-
-##Monthly Income Density (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
-```
-
+**Effect of income**
 As we can see from this density plot on monthly income, it is highly right skewed, which implies most employees' incomes are aound 2500 per month. There is a sharp decrease after the peak reached at 2500, additionally, the density of employees who choose to leave is higher than who want stay when their salary are lower than 4000($). 
 
-##Years At Company Density (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
-```
-
+**Effect of years spent at the company**
 In term of years employees have stayed at company, the percentage of attrition smoothly goes down during the first 20 years.However, in the following 20 years, it then inscreases to around 90 percent with fluctuations in between. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
 
-##Years Since Last Promotion (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
-```
-
+** Effect of promotion**
 The bar chart above shows there is no significant relationship between years since last promotion and the attrition. The propotion for leaving fluctuates around 20 percent.Two special years occur at year 8 and 12 with no attrion.
 
-##Business Travel (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
-```
-
+**Effect of business travel **
 In this business travel bar chart, only 8 percent of employees want to leave company if they are in non-travel roles, but high attrition occurs at about 25 percent when they need travel frequently, which indicates that business travel may have positive impact on company's attrition.
 
-##Work Life Balance (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
-```
 
+**Effect of work life balance**
 In terms of work life balance, around 30 percent of employees choose to leave the company if they have a bad balance. However with the level increases to 2 and more, the attrition percentage drops dramatically to half of level 1. Therefore, improvement of work life balance can also be a significant factor.
 
-##Colusion for Attrition plot analysis
+
+### Conclusion for Graphical Analysis
 
 So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel and WorkLifeBalance are three most significant factors that have strong impact on employees attrition choices. 
 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
 
 
-# Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
+## Hypothesis Test 
 
 As stated in the previous analysis part, in this correlation part, we will continue exploring the relationship between combined satisfaction (JobSatisFaction & WorkLifeBalance) and other variables, seeking potential indirect fators contributed to employees' attrition choices.
 
@@ -284,11 +257,13 @@ knitr::kable(a)
 
 ```
 
+
 ##1) Monthly Income
 ```{r, eval=FALSE, include=FALSE}
 #Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"MonthlyIncome"],IBM[,"combined_satisfaction"])
 ```
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.40687,4)
 df<-1468
@@ -302,12 +277,14 @@ knitr::kable(corr,caption="Summary")
 
 As shown above, the correlation between Monthly Income and combined satisfaction are around 0.01, there is little relationship between them.However, the increase on monthly income doesn't influence that much as what we expected before. High P-value (around 0.68) indicates monthly income may not be a significant factor for combined satisfaction.
 
-##2) Percent Salary Hike
+### Percent Salary Hike
 
 ```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
 #Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"PercentSalaryHike"],IBM[,"combined_satisfaction"])
 ```
+
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.58278,4)
 df<-1468
@@ -320,11 +297,14 @@ knitr::kable(corr,caption="Summary")
 
 Similar to the previous test, it can be observed that combined satisafaction is possitively but weakly connected with distance from home. In this case, increasing on percent salary hike may have no impact on changing employee's satisfaction.
 
+
 ##3) Performance Rating
 ```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
 #Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"PerformanceRating"],IBM[,"combined_satisfaction"])
 ```
+
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round( 0.12842,4)
 df<-1468
@@ -337,11 +317,13 @@ knitr::kable(corr,caption="Summary")
 
 With correlation value close to zero and 0.89 p-value, we can conclude that there is strongly evidence to reject performance rating as one of the variables for affecting attrition.
 
+
 ##4) Training Times Last Year
 ```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
 #Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"TrainingTimesLastYear"],IBM[,"combined_satisfaction"])
 ```
+
 ```{r,echo=FALSE,message=FALSE}
 Test_statistic<-round(0.39726,4)
 df<-1468
@@ -354,9 +336,11 @@ knitr::kable(corr,caption="Summary")
 
 Similar as the privous factor, with 0.01 correlation value, increasing on traning time per year still does not have significant impact on combined satisfaction.
 
+
 ##5) Years In Current Role
 ```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
 #Comment by Avi - There is an error in combined_satisfaction (Please check)
+
 cor.test(IBM[,"YearsInCurrentRole"],IBM[,"combined_satisfaction"])
 ```
 
@@ -372,34 +356,26 @@ knitr::kable(corr,caption="Summary")
 
 Compared with other factors tested above, years in current role shows stronger positive correlation with combined satisfaction, which implies the longer employees working on the same role the higher satisfaction they have. 
 
-##Conclusion for the correlation test
+### Conclusion for the correlation test
 As we can see from the above correlation test, years in current role is more relative with combined satisafaction(JobSatisFaction & WorkLifeBalance) compared with others. This implies years in current role may be an indirect variable contributing to employees' attrition choice. However, its correlation value is still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
-
-
 
 
 # Analysis
 
-#Converting variables into Factor Variables
-IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
-IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
-IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
-IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
-IBM$TrainingTimesLastYear<-ordered(IBM$TrainingTimesLastYear,levels=c("0","1","2","3","4","5","6"))
-IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
-IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
-
-
-
-
-
+## Proportion Test
+```{r}
+prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
+```
+The proportion of female staying in the company is 85.20% The proportion of male who stay in the company is 82.00%. So the proportion of male and female who stay in the company is the same according to the proportion test.
 
 # Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
 
 #First, regressing Attrition on department. Not statistically significant
+
+```{r}
+#NOT SURE ABOUT THIS SECTION - Comment by Avi - I have rewritten it !
+```
 
 Regression Analysis.
 
@@ -417,6 +393,11 @@ var = np(1-p)
 
 Wald test
 z-test
+
+```{r}
+Unsure section ends 
+```
+
 
 ```{r}
 att_1 <- glm(formula = Attrition ~ Department, data = IBM, family=binomial)
