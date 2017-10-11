@@ -1,18 +1,16 @@
 ---
 title: "Factors Impacting Employee Satisfaction"
-author: H W Chen, A Mago, W Marshall, H Song, S S
-  Swamy, X Zhong
+author: "H W Chen, A Mago, W Marshall, H Song, S S Swamy, X Zhong"
 date: "September 25, 2017"
 output:
-  pdf_document: 
-    number_sections: yes
-    toc: yes
   html_document:
     number_sections: yes
     toc: yes
-bibliography: bibliography_MathStats.bib
+  pdf_document:
+    number_sections: yes
+    toc: yes
 csl: harvard-imperial-college-london.csl
-
+bibliography: bibliography_MathStats.bib
 ---
 
 \pagebreak
@@ -182,7 +180,6 @@ IBM$Education<-ordered(IBM$Education,levels=c("1","2","3","4","5"))
 IBM$JobSatisfaction<-ordered(IBM$JobSatisfaction,levels=c("1","2","3","4"))
 IBM$JobLevel<-ordered(IBM$JobLevel,levels=c("1","2","3","4"))
 IBM$JobInvolvement<-ordered(IBM$JobInvolvement,levels=c("1","2","3","4"))
-IBM$JobLevel<-ordered(IBM$Joblevel,levels=c("1","2","3","4","5"))
 IBM$StockOptionLevel<-ordered(IBM$StockOptionLevel,levels=c("0","1","2","3"))
 IBM$RelationshipSatisfaction<-ordered(IBM$RelationshipSatisfaction,levels=c("1","2","3","4"))
 IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
@@ -261,7 +258,9 @@ As stated in the previous analysis part, in this correlation part, we will conti
 
 First, we create a correlation table which creates a general idea on all correlations and we will then select potential variable for further correlation tests.
 
-```{r,out.width="100%",fig.align="center",echo=FALSE,message=FALSE}
+```{r,out.width="100%",fig.align="center",echo=FALSE,message=FALSE, eval=FALSE, fig.align="center", message=FALSE, include=FALSE, out.width="100%"}
+#Comment by Avi - There is an error in combined_satisfaction (Please check)
+
 IBM <-mutate(IBM,combined_satisfaction =JobSatisfaction+WorkLifeBalance)
 new_IBM<-select(IBM,-(Attrition),-(BusinessTravel),-(Department),-(EducationField),-(Gender),-(JobRole),-(MaritalStatus),-(OverTime),-(EnvironmentSatisfaction),-(JobSatisfaction),-(WorkLifeBalance),-(TotalSatisfaction),-(RelationshipSatisfaction),-(JobLevel))
 
@@ -286,8 +285,8 @@ knitr::kable(a)
 ```
 
 ##1) Monthly Income
-```{r}
-
+```{r, eval=FALSE, include=FALSE}
+#Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"MonthlyIncome"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
@@ -305,7 +304,8 @@ As shown above, the correlation between Monthly Income and combined satisfaction
 
 ##2) Percent Salary Hike
 
-```{r,echo=FALSE,message=FALSE}
+```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
+#Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"PercentSalaryHike"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
@@ -321,7 +321,8 @@ knitr::kable(corr,caption="Summary")
 Similar to the previous test, it can be observed that combined satisafaction is possitively but weakly connected with distance from home. In this case, increasing on percent salary hike may have no impact on changing employee's satisfaction.
 
 ##3) Performance Rating
-```{r,echo=FALSE,message=FALSE}
+```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
+#Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"PerformanceRating"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
@@ -337,7 +338,8 @@ knitr::kable(corr,caption="Summary")
 With correlation value close to zero and 0.89 p-value, we can conclude that there is strongly evidence to reject performance rating as one of the variables for affecting attrition.
 
 ##4) Training Times Last Year
-```{r,echo=FALSE,message=FALSE}
+```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
+#Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"TrainingTimesLastYear"],IBM[,"combined_satisfaction"])
 ```
 ```{r,echo=FALSE,message=FALSE}
@@ -353,7 +355,8 @@ knitr::kable(corr,caption="Summary")
 Similar as the privous factor, with 0.01 correlation value, increasing on traning time per year still does not have significant impact on combined satisfaction.
 
 ##5) Years In Current Role
-```{r,echo=FALSE,message=FALSE}
+```{r,echo=FALSE,message=FALSE, eval=FALSE, message=FALSE, include=FALSE}
+#Comment by Avi - There is an error in combined_satisfaction (Please check)
 cor.test(IBM[,"YearsInCurrentRole"],IBM[,"combined_satisfaction"])
 ```
 
@@ -400,9 +403,9 @@ IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
 Regression Analysis.
 
-The motivation for the following model is to provide the company with a clear indication of the factors significantly contributing to an employee leaving the company. We will then split the model into two: one for those factors the company can directly influence in order to decrease its attrition rate, the other outlaying those which are of a more personal nature and where the company has limited scope for interference. That is not to say that those findings have no value, though. The information uncovered here provides the company with a broad insight into the morale across the demographics of its workforce and could provide motivation for the design of programmes or events that subtly engage those with a higher probability of searching for another job.
+The motivation for the following model is to provide the company with a clear indication of the factors significantly contributing to an employee leaving the company. We will then split the model into two: one for those factors the company can directly influence in order to decrease its attrition rate, the other outlaying those which are of a more personal nature and where the company has limited scope for interference. That is not to say that those findings have no value, though. The information uncovered here provides the company with a broad insight into the morale across the demographics of its workforce and could provide motivation for the design of programmes or events that subtly engage those with a higher probability of leaving the job.
 
-Hence, we propose a model which treats Attrition as the dependent, or explanatory, variable. Our earlier analysis describes Attrition as a categorical variable and for this reason we used the method of logistic regression to build the model. This method provides the analyst with a percentage chance of an event occuring, where '1' is coded to mean there is a high chance that the employee will leave and '0' means the opposite. We use the particular method of logit smoothing to restrict our output between these levels. Incidentally, this also serves as a basis for a scale on which to compare the probability of individual employees leaving. For instance, if the company wanted to know the reasons behind people of or over a certain age leaving the company, then, controlling for age, it is possible to compare whether one employee is likely to leave over another based on their other key characteristics. From here, the company can direct effort into those areas to improve the chances of that employee choosing to stay at the company. 
+Hence, we propose a model which treats Attrition as the dependent, or explanatory, variable. Our earlier analysis describes Attrition as a categorical variable and for this reason we used the method of logistic regression to build the model. This method provides the percentage chance of an event occuring, where '1' is coded to mean there is a high chance that the employee will leave and '0' means the opposite. We use the particular method of logit smoothing to restrict our output between these levels. Incidentally, this also serves as a basis for a scale on which to compare the probability of individual employees leaving. For instance, if the company wanted to know the reasons behind people of or over a certain age leaving the company, then, controlling for age, it is possible to compare whether one employee is likely to leave over another based on their other key characteristics. From here, the company can direct effort into those areas to improve the chances of that employee choosing to stay at the company. 
 
 The process and logic of determining the model is such. First, we use a maximum-likelihood estimation (MLE) to quantify the effect of any particular variable on the probablity of an employee leaving the company. It must be noted that MLE assumes an aspymtotically normal distribution and thus invokes the use of the Wald statistic to test whether or not that particular variable's effect is statistically significant: our null hypothesis is always that the variable has no effect. We set a 95% confidence interval for the model. If the Wald statistic is deemed to be more extreme than this level, then the null hypothesis is rejected and we accept that the alternative hypothesis that there is a statistically significant relationship between those two variables; that the independent variable goes some way in explaining the probablity that an employee leaves. The z-value is then called and calculated to provide the probablilty that the null hypothesis is true in a value named the p-value. If the p-value is below 5% then we reject the null hypothesis.
 
@@ -458,141 +461,165 @@ tot_sat_11 <- glm(formula = Attrition ~ YearsAtCompany, data = IBM, family=binom
 summary(att_1)
 
 
+##Regression Analysis
 
-#Reg Models Equation
+
+This report is making use of the logit regression model in order to analyse the impact several variables have on an individual's odds for leaving the company. This analysis is initiated by looking at two models: one for those factors the company can directly influence in order to decrease its attrition rate, the other outlaying those which are of a more personal nature and where the company has limited scope for interference. This is then followed by a model which only takes into consideration the performance indicators of an individual. These models allows the study to take into consideration the nature of different variables. This is finally followed by a full analysis model which has all the variables. The full model adds to the robustness of the results which are presented beforehand. 
+
+Since this study makes use of a logit model, the coefficient on a independent variable signifies the change in log odds of attrition caused because of that specific variable. These results were transformed to obtain the change in odds which are more intuitive as it will help this report to identify factors which makes it more likely for people to quit their job.
+
+
+###Simple Logit regression plots
 
 
 ```{r}
-
-IBM_Sqr<-IBM%>%mutate(TotalWorkingYearsSqr=TotalWorkingYears**2,TrainingTimesLastYearSqr=TrainingTimesLastYear**2,YearsAtCompanySqr=YearsAtCompany**2,YearsInCurrentRoleSqr=YearsInCurrentRole**2,YearsSinceLastPromotionSqr=YearsSinceLastPromotion**2,YearsWithCurrManagerSqr=YearsWithCurrManager**2)
-```
-
-
-```{r}
-#EXPERIMENTAL (This is not final - Please seee the two code chunks below for regression models)
-
-simple_model_1<-glm(Attrition~BusinessTravel+DistanceFromHome+NumCompaniesWorked+OverTime+TotalWorkingYears+TotalSatisfaction,data = IBM_Sqr, family= binomial)
-stargazer(list(simple_model_1), type = "text")
-
-summary(simple_model_1)
-or_glm(data = IBM_Sqr, model = simple_model_1, 
-       incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , TotalWorkingYears = 5,CI = 0.95))
-
-simple_model_2<-glm(Attrition~TotalSatisfaction,data = IBM_Sqr, family= binomial)
-summary(simple_model_2)
-
-or_glm(data = IBM_Sqr, model = simple_model_2, 
-       incr = list(TotalSatisfaction = 1, CI = 0.95))
-
-simple_model_3<-glm(Attrition~JobInvolvement,data = IBM_Sqr, family= binomial)
-summary(simple_model_3)
-
-or_glm(data = IBM_Sqr, model = simple_model_3, 
-       incr = list(JobInvolvement = 1, CI = 0.95))
-
-simple_model_4<-glm(Attrition~OverTime,data = IBM_Sqr, family= binomial)
-summary(simple_model_4)
-
-
-simple_model_plot_1<-glm(Attrition~MonthlyIncome,data = IBM_Sqr, family= binomial)
- 
-or_glm(data = IBM_Sqr, model = simple_model_plot_1, 
-       incr = list(MonthlyIncome = 1000, CI = 0.95))
-
-ggplot(data=IBM, aes(y = Attrition, x = MonthlyIncome)) +geom_point()
-
-stargazer(list(simple_model_2,simple_model_3,simple_model_4), type = "text")
-
-
-
-```
-
-```{r}
-#Plotting simple Logit models to see the impat of continuos variables on probability of Attrition
+#Dataset creation for plotting and regression analysis
 
 predictdata<-IBM
 predictdata$Attrition<-factor(predictdata$Attrition,levels=c("No","Yes"),labels = c(0,1))
 
+# Predictdata_avi created to make sure that the comparision in reg model (out of control) the dropped out category is married!
+predictdata_avi <- predictdata
+predictdata_avi$MaritalStatus<-factor(predictdata_avi$MaritalStatus,levels=c("Married","Single","Divorced"),labels = c(0,1,2))
+predictdata_avi$MaritalStatus<-factor(predictdata_avi$MaritalStatus,levels=c(0,1,2),labels = c("Married","Single","Divorced"))
+```
+
+
+Before conducting the analysis, plots of the predictions made my a single variable logit model were analysed to check if they are in line with the basic assumptions about the impact of certain variables on attrtition. The results from these simple predictive plots will be used as a motivation to conduct the main regression analysis.
+
+
+####Impact of monthly income on attrition
+
+The graph below clearly shows how the probability of attrition decreases as monthly income offered by a job increases. This is in line with the expected relationship since monetary incentive is a key driver for most individuals. These estimates can be used to inform the incentive schemes which minimises the attrition rate. 
+
+
+```{r}
 #Monthly Income vs Attrition
 
-simple_model_plot_1<-glm(Attrition~MonthlyIncome,data = IBM_Sqr, family= binomial)
+simple_model_plot_1<-glm(Attrition~MonthlyIncome,data = predictdata_avi, family= binomial)
 
 xv <- seq(min(IBM$MonthlyIncome), max(IBM$MonthlyIncome),10)
 yv <- predict(simple_model_plot_1,list(MonthlyIncome = xv), type = "response")
 
 ggplot()+labs(x="Monthly Income", y="Probability of Attrition")+geom_smooth(aes(x=xv,y=yv))
+```
 
+
+####Impact of Distance From Home on attrition
+
+This graph displays a positive relationship between the distance from home and the probability of attrition. This again is in line with the expected relationship since it is clearly more inconvenient for them to commute. This information can be used to aid the travel benefits which a company might offer an employee to reduce attrition. 
+
+
+```{r}
 #Distance From Home vs Attrition
 
-simple_model_plot_2<-glm(Attrition~DistanceFromHome,data = IBM_Sqr, family= binomial)
+simple_model_plot_2<-glm(Attrition~DistanceFromHome,data = predictdata_avi, family= binomial)
 
 xv1 <- seq(min(IBM$DistanceFromHome), max(IBM$DistanceFromHome),1)
 yv1 <- predict(simple_model_plot_2,list(DistanceFromHome = xv1), type = "response")
 
 ggplot()+geom_smooth(aes(x=xv1,y=yv1))+labs(x="Distance From Home", y="Probability of Attrition")
+```
 
 
+####Impact of Total Satisfaction on attrition
+
+As expected, we can clearly see that as total satisfaction increases the predicted probability of attrition decrease.
+
+Since these graphs show that our model performs as expected we build four multi-variable logit models as discussed above.
+
+
+```{r}
 #Total Satisfaction From Home vs Attrition
 
-simple_model_plot_3<-glm(Attrition~TotalSatisfaction,data = IBM_Sqr, family= binomial)
+simple_model_plot_3<-glm(Attrition~TotalSatisfaction,data = predictdata_avi, family= binomial)
 
 xv2 <- seq(min(IBM$TotalSatisfaction), max(IBM$TotalSatisfaction),1)
 yv2 <- predict(simple_model_plot_3,list(TotalSatisfaction = xv2), type = "response")
 
 ggplot()+geom_smooth(aes(x=xv2,y=yv2))+labs(x="Total Satisfaction", y="Probability of Attrition")
-
 ```
 
 
+###Multi-varibale logit models
+
+####Company Control Model 
+
+We can clearly see from the result below that business travel and overtime has the highest impact on the odds of attrition. The result suggests that the odd of attrition for an employee increases by a factor of 4.6 (compared to people who don't travel) if the employee travels frequently for business work. This can be vital for a company as the company might want to spend more resources on finding people with a passion for traveling since it can be a major factor causing the employee to leave. Further to this, people who work over time have an odd which is 4.9 times higher than people who don't work overtime. This result can be used by the company to make changes in the monetary incentive for people who work overtime. It is also interesting to note that people working in Research & Devlopment are have almost half the odds for leaving compared to the human resources department. On the other hand people working in Sales are 1.3 times more likely to leave compared again to the human resources department. This suggests a company to focus on the sales department and see if there is any particular factor casuing this. Having said that, it is also important to note that the results on department categories are not significant thus it might actually be of no real value since the impact is not satistically different from zero.
+
 
 ```{r}
-
-# Regression Models with Odds Calculation(Main)
-
-#Full Model 
-full_model_reg_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+EducationField+HourlyRate+Gender+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
-
-#Full Model Odds Ratio Calculation
-or_glm(data = IBM_Sqr, model = full_model_reg_v1, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1,YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, Gender=1 , MartialStatus = 1, CI = 0.95))
-
 #Model with only variables that a company can control
-company_control_model_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = IBM_Sqr, family= binomial)
+company_control_model_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = predictdata_avi, family= binomial)
 
 #Odds Ratio Calculation for the model with only variables that a company can control
-or_glm(data = IBM_Sqr, model = company_control_model_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TrainingTimesLastYear = 1, YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, CI = 0.95))
+or_glm(data = predictdata_avi, model = company_control_model_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TrainingTimesLastYear = 1, YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, CI = 0.95))
 
-#Model with only variables that a company can't control
-out_of_control_v1<-glm(Attrition~+EducationField+Gender+MaritalStatus+NumCompaniesWorked+TotalWorkingYears+TotalSatisfaction,data = IBM_Sqr, family= binomial)
-
-#Odds Ratio Calculation for the model with only variables that a company can't control
-or_glm(data = IBM_Sqr, model = out_of_control_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , TotalWorkingYears = 1, MartialStatus = 1, CI = 0.95))
-
-#Model with only performance variables
-model_reg_performance<-glm(Attrition~OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction+BusinessTravel,data = IBM_Sqr, family= binomial)
-
-#Odds Ratio Calculation for model with only performance variables
-or_glm(data = IBM_Sqr, model = model_reg_performance, incr = list(TotalSatisfaction = 1 ,PercentSalaryHike = 1,TrainingTimesLastYear=1, YearsAtCompany = 1, YearsInCurrentRole = 1, YearsSinceLastPromotion = 1, YearsWithCurrManager = 1,  CI = 0.95))
+stargazer(company_control_model_v1, type = "text")
 ```
 
+
+####Company Out of Control Model 
+
+Although this model has variables that might not be under direct influence of the company but it is still useful for the purpose of this study as the company can try to resolve the issue by offering a compensating incentive. The resut from this model clearly shows that Martial Status has a huge impact on the odds of a worker quitting. We can see that compared to a married worker the odds of quitting for a single worker is 2.5 times higher. This result is also highly significant. It is also interesting to note that as total working years inceases by 1 the odds for attrition decreases by 8 percent. Also, an increase of 1 unit of total satisfaction causes the odds for attrition to fall by 22%. This suggests that the company can focus its resources on singles, newcomers and people who have low total satisfaction.
+
+
+```{r}
+#Model with only variables that a company can't control
+out_of_control_v1<-glm(Attrition~+EducationField+Gender+MaritalStatus+DistanceFromHome+NumCompaniesWorked+TotalWorkingYears+TotalSatisfaction,data = predictdata_avi, family= binomial)
+
+#Odds Ratio Calculation for the model with only variables that a company can't control
+or_glm(data = predictdata_avi, model = out_of_control_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , TotalWorkingYears = 1, MartialStatus = 1, DistanceFromHome = 10, CI = 0.95))
+
+stargazer(out_of_control_v1, type = "text")
+```
+
+
+####Performance Indicator Model 
+
+The result of this model is similar to the two models presenetd above and thus adds to the robustness of the preceeding models since the estimates on variables are not highly sensitive to a specific model equation. 
+
+
+```{r}
+#Model with only performance variables
+model_reg_performance<-glm(Attrition~OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction+BusinessTravel,data = predictdata_avi, family= binomial)
+
+#Odds Ratio Calculation for model with only performance variables
+or_glm(data = predictdata_avi, model = model_reg_performance, incr = list(TotalSatisfaction = 1 ,PercentSalaryHike = 1,TrainingTimesLastYear=1, YearsAtCompany = 1, YearsInCurrentRole = 1, YearsSinceLastPromotion = 1, YearsWithCurrManager = 1,  CI = 0.95))
+
+stargazer(model_reg_performance, type = "text")
+```
+
+
+####Full Model 
+
+The full model includes all revelant variables that might have an impact on attrition. The variables that have the most positive impact on odds of attrition are Business Travel, Over Time, Martial Status. This finding is consistent with our results in the previoius models. In terms of average partial effect (APE), an employee traveling frequently for business work increases the probability of leaving by 20% compared to an employee who does not travel.Also, working overtime increases the probability of attrition by 18 percent. Furthermore, compared to a married person a single employee has a 12% higher probability of leaving the job. 
+
+Finally, the full model result suggests that a one point rise in total satisfaction results in a decrease in odds of attrition by 32%. In terms of APE the impact of a single point increase in total satisfaction is a reduction of 4% in the probability of attrition. Another interesting observation is of training provided last year. The probability of attrition decreases by 2% as the training provided increases by 1 unit.
 
 
 
 ```{r}
-stargazer(list(full_model_reg,company_control_model,out_of_control_model), type = "text", digits = 2)
+#Full Model 
+full_model_reg_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+EducationField+HourlyRate+Gender+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = predictdata_avi, family= binomial)
+
+#Full Model Odds Ratio Calculation
+or_glm(data = predictdata_avi, model = full_model_reg_v1, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1,YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, Gender=1 , MartialStatus = 1, CI = 0.95))
+
 ```
 
+```{r}
+#Average Partial Effect Calculation for full model
 
+round((mean(full_model_reg_v1$fitted.values * (1-full_model_reg_v1$fitted.values)))*full_model_reg_v1$coefficients,digits=2)
+```
 
-#Visualising Regression
- 
-#Trying to visualize The generalized linear models created above
+#### Multi Variable Regression Model Summary
+```{r}
+#Need to add model names instead of numbers in stargazer
+stargazer(list(full_model_reg_v1,company_control_model_v1,out_of_control_v1,model_reg_performance), type="text", align = TRUE)
+```
 
-library(visreg)
-
-data("IBM_Sqr", package="MASS")
-fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= binomial)
-visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
-visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition", rug = 2)
 
 # Conclusion 
 
