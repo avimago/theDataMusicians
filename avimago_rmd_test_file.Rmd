@@ -173,8 +173,8 @@ In this section, the distribution of the different variable are plotted and obse
 ```{r distributionPlots, echo=FALSE,message=FALSE}
 p_train<-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
 p_jsat<-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
-p_role<-ggplot(IBM,aes(x=JobRole,fill=Attrition))+geom_bar(position="fill")
-p_income<-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
+p_role<-ggplot(IBM,aes(x=JobRole,fill=Attrition))+geom_bar(position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+p_income<-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_histogram(position="fill", binwidth=2500)
 p_years<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
 p_yrpromo<-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
 p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
@@ -182,70 +182,40 @@ p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position
 grid.arrange(p_train, p_jsat, p_role, p_income, ncol=2)
 ```
 
+**Effect of trainings**
+The bar chart for training times shows a rough decreasing trend. In general, more training leads to fewer leaves. However, more than 75 percent of employees stayed at the company despite no training last year. 
 
-###Training Time Last Year (Yes vs No)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
-```
-
-The bar chart above shows a roughly decreasing trend between the training time and the amount of attrition, the longer training time leads to fewer attrition. In addition, about 75 percent of employees keep stay at the company without being affected by this factor. 
-
-### Job Satisfaction (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
-```
+**Effect of job satisfaction**
 Similar to traing time, JobSatisfaction is also a factor that influece people's decision on whether to leave or not. As job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%, which indicates improving job satisfaction may help prevent employees from leaving the company.
 
-### Department wise Attrition (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=Department,fill=Attrition))+geom_bar(position="fill")
-```
+**Percentage leave with respect to job role**
 Based on the above bar chart, it can be concluded that Research & Development department is the most stable department with only around 14% of employees leaving, while the proporion in Sales and Human Resources Departments are about 10% higher than it.We can mainly focus on this two departments' analysis if the company do not have enough money for improvement.
 
-
-### Monthly Income Density (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_density(alpha=0.55)
-```
-
+**Effect of income**
 As we can see from this density plot on monthly income, it is highly right skewed, which implies most employees' incomes are aound 2500 per month. There is a sharp decrease after the peak reached at 2500, additionally, the density of employees who choose to leave is higher than who want stay when their salary are lower than 4000($). 
 
-### Years At Company Density (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
-```
-
+**Effect of years spent at the company**
 In term of years employees have stayed at company, the percentage of attrition smoothly goes down during the first 20 years.However, in the following 20 years, it then inscreases to around 90 percent with fluctuations in between. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
 
-### Years Since Last Promotion (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
-```
-
+** Effect of promotion**
 The bar chart above shows there is no significant relationship between years since last promotion and the attrition. The propotion for leaving fluctuates around 20 percent.Two special years occur at year 8 and 12 with no attrion.
 
-### Business Travel (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
-```
-
+**Effect of business travel **
 In this business travel bar chart, only 8 percent of employees want to leave company if they are in non-travel roles, but high attrition occurs at about 25 percent when they need travel frequently, which indicates that business travel may have positive impact on company's attrition.
 
-### Work Life Balance (Y vs N)
-```{r,echo=FALSE,message=FALSE}
-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
-```
 
+**Effect of work life balance**
 In terms of work life balance, around 30 percent of employees choose to leave the company if they have a bad balance. However with the level increases to 2 and more, the attrition percentage drops dramatically to half of level 1. Therefore, improvement of work life balance can also be a significant factor.
 
-### Colusion for Attrition plot analysis
+
+### Conclusion for Graphical Analysis
 
 So far we have plotted eight graphs aiming to find out the relationship between attrition and each other variables. From the analysis above, we can see JobSatisfaction, BusinessTravel and WorkLifeBalance are three most significant factors that have strong impact on employees attrition choices. 
 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
 
 
-## Correlation Test with combined satisfaction (JobSatisFaction & WorkLifeBalance) relative factors
+## Hypothesis Test 
 
 As stated in the previous analysis part, in this correlation part, we will continue exploring the relationship between combined satisfaction (JobSatisFaction & WorkLifeBalance) and other variables, seeking potential indirect fators contributed to employees' attrition choices.
 
