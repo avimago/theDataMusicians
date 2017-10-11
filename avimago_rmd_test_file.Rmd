@@ -394,7 +394,15 @@ IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
 
 
-# Hypothesis Tests. Cannot Use t-tests as our independent variable is not continuous. Instead, we use regression analysis to determine whether or not the variable is statistically significant.
+# Hypothesis Tests.
+chisq.test(IBM$Attrition,IBM$TrainingTimesLastYear)
+chisq.test(IBM$Attrition,IBM$JobSatisfaction)
+chisq.test(IBM$Attrition,IBM$Department)
+chisq.test(IBM$Attrition,IBM$MonthlyIncome)
+chisq.test(IBM$Attrition,IBM$YearsAtCompany)
+chisq.test(IBM$Attrition,IBM$YearsSinceLastPromotion)
+chisq.test(IBM$Attrition,IBM$BusinessTravel)
+chisq.test(IBM$Attrition,IBM$WorkLifeBalance)
 
 #First, regressing Attrition on department. Not statistically significant
 
@@ -595,7 +603,31 @@ fit <- glm(Attrition~DistanceFromHome+MonthlyIncome, data = IBM_Sqr, family= bin
 visreg(fit, "DistanceFromHome", xlab="DistanceFromHome", ylab="probability of Attrition")
 visreg(fit, "MonthlyIncome", xlab="MonthlyIncome", ylab="probability of Attrition", rug = 2)
 
+# Model Evaluation
+```{r}
+#Splitting the dataset and running models on the smaller samples
+predictdata<-IBM
+predictdata$Attrition <- factor(predictdata$Attrition, levels = c("No","Yes"),labels = c(0,1))
+set.seed(58)
+test_rows<-sample.int(nrow(predictdata),nrow(predictdata)/3)
+test<-predictdata[test_rows,]
+train<-predictdata[-test_rows,]
 
+full_model_reg1<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+Education+EducationField+Gender+HourlyRate+JobLevel+JobRole+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+StockOptionLevel+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = train, family= binomial)
+
+#Making predictions on the training data
+p<-predict(full_model_reg1,train,type="response")
+pyes<-round(p)
+table(train[,2],pyes)
+library(caret)
+confusionMatrix(pyes,train[,2])
+
+#Making predictions on the test data
+p1<-predict(full_model_reg1,test,type="response")
+pyes1<-round(p1)
+table(pyes1,test[,2])
+confusionMatrix(pyes1,test[,2])
+```
 # Conclusion 
 
 
