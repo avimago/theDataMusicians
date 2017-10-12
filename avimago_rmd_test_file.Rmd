@@ -228,9 +228,7 @@ So far we have plotted eight graphs aiming to find out the relationship between 
 However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all subset of TotalSatisfaction, we can combined them together as a combined satisfaction (continues variable) and continue exploring which factors affect them through correlation test, in order to find out potential variables that indirectly affect attriton.
 
 
-## Hypothesis Test 
-
-Through graphical observation, some variables that influence attrition have been identified. In this section, hypothesis test is applied to these variables to further investigate their relevance to attrition. 
+## Correlation Analysis
 
 First, we create a correlation table which creates a general idea on all correlations and we will then select potential variable for further correlation tests.
 
@@ -362,11 +360,8 @@ Compared with other factors tested above, years in current role shows stronger p
 ### Conclusion for the correlation test
 As we can see from the above correlation test, years in current role is more relative with combined satisafaction(JobSatisFaction & WorkLifeBalance) compared with others. This implies years in current role may be an indirect variable contributing to employees' attrition choice. However, its correlation value is still not very significant. Therefore the linear regression might not give the a suitable approximation, it may be an approriate choice to apply another regression methods.
 
-
-# Analysis
-
-
-## Proportion Test
+## Hypothesis Test
+Through graphical observation, some variables that influence attrition have been identified. In this section, hypothesis test is applied to these variables to further investigate their relevance to attrition. 
 ```{r}
 prop.test(table(IBM[,"Gender"], IBM[,"Attrition"]), alternative = "greater")
 ```
