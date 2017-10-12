@@ -58,6 +58,7 @@ IBM <- read.csv("WA_Fn-UseC_-HR-Employee-Attrition.csv")
 colnames(IBM)[1] <- "Age"  # correct faulty column name of the first column
 
 # columns such as employee number are not relevant or where all entries are the same, keep only relevant columns with varying inputs
+
 IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorked, OverTime:RelationshipSatisfaction, StockOptionLevel:YearsWithCurrManager)
 ```
 
@@ -156,7 +157,7 @@ grid.arrange(sal1,sal2, ncol=2)
 ## Strength and Limitations
 This dataset contains information of employees that stayed and of those who left. It allows us to compare and reveal difference in trend between those who decided to leave and those who stayed. The dataset covered 3 main departments and 7 job roles in IBM and it also contain each employee’s personal information and his job information. The detailed information enables us to augment the analysis.
 
-However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean. As a result, our team can not give suggestions even if we found that it affects attrition. Secondly, this dataset only covered 1470 employees, which is not large enough to produce an extremely persuasive result. Moreover, technically we can only narrow down to which factors are related to attrition. With cross-sectional data it is hard to prove causalty. Lastly, the variables EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are categorical, which requires a different type of regression compared to the standard linear regression taught in the lectures.
+However, this dataset has some limitations. It didn’t specify what DailyRate, HourlyRate, Monthly Rate mean. As a result, our team can not give suggestions even if we found that it affects attrition. Secondly, this dataset only covered 1470 employees, which is not large enough to produce an extremely persuasive result. Moreover, technically we can only narrow down to which factors are related to attrition. With cross-sectional data it is hard to prove causality. Lastly, the variables such as EnvironmentSatisfaction, JobSatisfaction, RelationshipSatisfaction and WorkLifeBalance are categorical, which require a different type of regression compared to the standard linear regression taught in the lectures.
 
 # Analysis
 
@@ -179,7 +180,7 @@ IBM <- filter(IBM, JobRole!="Manager")
 ## Distribution With Respect to Attrition
 In this section, the distribution of the different variable are plotted and observed. The aim is to discover discrepancies between the employees that left the company, which has 'yes' in the 'Attrition column'. 
 
-### Overall
+After plotting and observing, graphs that shows interesting trends are presented below. 
 ```{r distributionPlots, echo=FALSE,message=FALSE}
 p_train<-ggplot(IBM,aes(x=TrainingTimesLastYear,fill=Attrition))+geom_bar(position="fill")
 p_jsat<-ggplot(IBM,aes(x=JobSatisfaction,fill=Attrition))+geom_bar(position="fill")
@@ -189,6 +190,8 @@ p_years<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.
 p_yrpromo<-ggplot(IBM,aes(x=YearsSinceLastPromotion,fill=Attrition))+geom_bar(position="fill")
 p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
 p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
+
+# create a grid to display graphs in a more compact form 
 grid.arrange(p_train, p_jsat, p_role, p_income, ncol=2)
 ```
 
@@ -227,7 +230,7 @@ However, since JobSatisfaction (distrete) and WorkLifeBalance (discrete) are all
 
 ## Hypothesis Test 
 
-As stated in the previous analysis part, in this correlation part, we will continue exploring the relationship between combined satisfaction (JobSatisFaction & WorkLifeBalance) and other variables, seeking potential indirect fators contributed to employees' attrition choices.
+Through graphical observation, some variables that influence attrition have been identified. In this section, hypothesis test is applied to these variables to further investigate their relevance to attrition. 
 
 First, we create a correlation table which creates a general idea on all correlations and we will then select potential variable for further correlation tests.
 
