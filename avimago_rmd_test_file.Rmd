@@ -603,6 +603,12 @@ By conducting the regression analysis using logit, this study was able to quanti
 
 The results from the regression analysis suggests that the company should actually make changes in the type of people it hires who are involved in a lot of business travel. Further to this particular attention should be given to the overtime pay structure in order to reward their employees for the extra work.
 
+**Github Repository**
+
+git@github.com:avimago/theDataMusicians.git
+
+https://github.com/avimago/theDataMusicians.git
+
 \pagebreak
 
 # Bibliography
