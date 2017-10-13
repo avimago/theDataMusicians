@@ -143,7 +143,7 @@ The dataset includes information about employees from 3 different departments in
 ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 65,hjust = 1))
 ```
 
-The graph demonstrates that managers act as somewhat of an outlier in this data set. Firstly, there are a very small number of managers and the manager role is the only cross-department role. Second, the attrition rate between managers and non-managers differed significantly: only 4.9% of managers left the company, compared 16.1% of all employees. To reduce noise and avoid the issue of multicollinearity, data related to the manager role is filtered out during analysis. 
+The graph demonstrates that managers act as somewhat of an outlier in this data set. Firstly, there are a very small number of managers and the manager role is the only cross-department role. Second, the attrition rate between managers and non-managers differed significantly: only 4.9% of managers left the company, compared 16.1% of all employees.
 
 A report conducted by indeed.com shows that compensation is critical in the decision of an employee to either leave or stay at a company. Two graphs are ploted below to show the distribution of monthly income. Most employees recieved a salary between £2500 and £7500. Apart from managers, the role of Research Director has the highest monthly income with an average at 16034. The roles of Healthcare Representative, Manufacturing Director and Sales Executive earned around half as much, at £7528.76, £7295.14 and £6924.28 on average, respectively. Employees in other roles were compensated less than this.
 
@@ -213,9 +213,7 @@ It is worth noting that although sales executive has relatively high salary, the
 
 
 ```{r,echo=FALSE}
-p_role
-# create a grid to display graphs in a more compact form 
-#grid.arrange(p_Dist,p_jsat, p_biztrav,p_wlbalance, ncol=2)
+grid.arrange(p_role,sal2, ncol=2)
 ```
 
 **Effect of distance from home**
@@ -293,9 +291,9 @@ a<-data.frame(Sample,Variable1,Variable2,Correlation,P_value)
 knitr::kable(a, caption = "Correlation Test Result", align='l')
 ```
 
-The above table shows correlation between monthly income and total working years done in three different settings, one with all samples, one with people who left the company and one with people who are still at the company. For all samples, the correlation is quite high at 0.77 which validates our assumption that people who have more work experience, regardless of relevance to current job, typically earns a higher monthly salary. 
+The above table shows correlation between monthly income and total working years done in three different settings, one with all samples, one with people who left the company and one with people who are still at the company. For all samples, the correlation is quite high at 0.71 which validates our assumption that people who have more work experience, regardless of relevance to current job, typically earns a higher monthly salary. 
 
-Separating the sample into people who left and people who stayed, it was found that amongst employees who left the company, the correlation between their monthly income and their work experience is lower than the people who are still at the company. Althought the difference is not significant it suggests that experience and income mismatch may lead to attrition. 
+Separating the sample into people who left and people who stayed, it was found that amongst employees who left the company, the correlation between their monthly income and their work experience is higher than the people who are still at the company. This does not support our assumption that the mismatch of experience and income is related to more attrition.  
 
 ## Chi-Square Test 
 
@@ -597,9 +595,9 @@ Observing the confusion matrix, where the predictions are the rows and the actua
 
 ```
 
-To conclude, we provide a brief summary of our steps and the outcomes that were reached. First, we outlined the problem that needed to be solved, namely that the company wanted to understand the factors contributing significantly towards its attrition rate. It was claimed that a high attrition rate is costly for a company due to the higher training costs, recruitment initiatives and lost time. It was proposed that by understanding these factors a company would be able to use its resources more effectively when appealing to those who are most likely to leave for another employer. We then started our analysis by exploring the dataset and reducing it down to a form that would be more effective to work with- for example, we excluded all columns that contained data identical to every employee. On this topic, we also recognised that there could have been a multicollinearity issue had managers been included since it was observed that they at times spanned more than one department. On top of this, the attrition rate of managers ~5% and not really a problem to the employer. 
+To conclude, we provide a brief summary of our steps and the outcomes that were reached. First, we outlined the problem that needed to be solved, namely that the company wanted to understand the factors contributing significantly towards its attrition rate. It was claimed that a high attrition rate is costly for a company due to the higher training costs, recruitment initiatives and lost time. It was proposed that by understanding these factors a company would be able to use its resources more effectively when appealing to those who are most likely to leave for another employer. We then started our analysis by exploring the dataset and reducing it down to a form that would be more effective to work with- for example, we excluded all columns that contained data identical to every employee. On this topic, we also recognised that only managers are cross department. Therefore, we filterd out manager samples so that a job role belongs to a specific department. On top of this, the attrition rate of managers ~5% and not really a problem to the employer. 
 
-The graphical analysis shows potential links between income, frequency of business travel, office's distance from home and job satisfaction. Conducting chi-square tests on frequency of business travel, job satisfaction and worklife balance showed that they all influence attrition to a high confidence level. Although attrition rates are different for different job roles, it is very likely that it is due to the difference in wages of the roles. More interestingly, it was also discovered that a mismatch between years of experience and income can possibly lead to higher attrition rates. 
+The graphical analysis shows potential links between income, frequency of business travel, office's distance from home and job satisfaction. Conducting chi-square tests on frequency of business travel, job satisfaction and worklife balance showed that they all influence attrition to a high confidence level. Although attrition rates are different for different job roles, it is very likely that it is due to the difference in wages of the roles.  
 
 By conducting the regression analysis using logit, this study was able to quantify the impact of key drivers of attrition. These include the marital status of an employee, whether or not an employee works overtime and frequency of business travel. On the other hand, total satisfaction decreases the probability of attrition by 4%. The frequency of training also reduces the probability of attrition by 2% which also justifies why companies should focus on it. Evaluating the model, while the model predicted the test dataset accurately 84% of the time, due to the imbalanced proportion between the two classes, only 64% of all predictions of the minority class were accurate.
 
