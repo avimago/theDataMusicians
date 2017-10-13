@@ -111,7 +111,7 @@ jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Depar
                                  "PerformanceRating","StockOptionLevel", "TrainingTimesLastYear","YearsAtCompany",
                                  "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager"),
                       Type=c("Factor","Factor","Integer","Factor","Integer","Factor","Factor","Factor","Integer","Integer",
-                             "Factor","Integer","Integer","Factor","Factor","Integer","Integer","Integer","Integer"),
+                             "Factor","Integer","Factor","Factor","Factor","Integer","Integer","Integer","Integer"),
                       Description=c("If this employee left the company or not", "The frequency of business travel", "The daily rate of the employee", 
                                     "The department of this employee (Human Resource, Research & Development and Sales)","The hourly rate of the employee","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","The monthly rate of the employee", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee possesses", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
 
@@ -157,6 +157,11 @@ grid.arrange(sal1,sal2, ncol=2)
 #mean(IBM[IBM[,"JobRole"]=="Sales Executive","MonthlyIncome"])
 ```
 
+## Strengths and Limitations
+In the cleaning phase of the project, the dataset used provided clear benefits and limitations. The first great benefit was cleanliness: the data was very clean, there were no missing values or erroneous results. The second benefit was detail. The data set recorded information on 35 variables captured through an internal survey, such abundance gives us a valuable insight into the treatment of employees from different parts of the company. The inclusion of subjective ordered factorial variables facilitate the capture of some of the emotional and personal feelings towards the workplace. Packaged together, this data allows the analyst to take a holistic approach towards the analysis, that is, it could be pivotal for the firm to understand the factors which affect attrition that they can control, and those they cannot.
+
+There is no light without dark, and there were several limitations to the dataset. The first clear limitation was the small sample size, 1470 is a small number of observations to generate any widely conclusive evidence about a population. Secondly, 81% of the respondents in the dataset had not left the company and thus, due to imbalanced proportions between the classes, it is difficult to find out who leaves and why. A third limitation was that a few of the variable classes were not fully defined, namely MonthlyRate, HourlyRate and DailyRate. Assumptions were made as to the true meaning of these. Although already outlined as a positive, another limitation was subjectivity. There were many subjective variables and it is impossible to know how accurate the information is or how accurately the respondents acted when filling out the survey. In an extreme case, imagine an employee who has just been fired. Their response at that moment will not reflect accurately how they felt on a day-to-day basis within the organisation.
+
 # Analysis
 
 ```{r, echo=FALSE}
@@ -179,19 +184,24 @@ p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="f
 p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
 
 # create a grid to display graphs in a more compact form 
-grid.arrange(p_income, p_years,  ncol=2, widths=c(3,3))
+#grid.arrange(p_income, p_years,  ncol=2, widths=c(3,3))
 ```
 
 **Effect of income**
 
 According to the report on work force movement published by indeed.com @indeedJobTenure, job compensation is the second most popular reason for moving from a company. The above graph on attrition rate with regards to monthly income shows an agreement with the findings of indeed.com. Leavers are concentrated in the low-income range. Interestingly, a sizeable attrition rate is also observed in the upper quartile of monthly income. If this is still the case when other influential variables are held constant, IBM may need to investigate further. Possible reasons can be that these talents are too popular so other companies are willing to offer more to get them or that they are hired on a temporary contract basis.
 
+```{r,echo=FALSE}
+p_income
+```
+
+
 **Effect of years spent at the company**
 
 An article on TLNT claimed that employers lose a third of their new hires within the first six months @talent. The graph yielded from this dataset agrees with this to some extent. The percentage of attrition decreases during the first 20 years. However, there are spikes in attrition for people who have been in the company for around 32 and 40 years, to around 90 percent. This could be caused by people retiring or stepping back to do a less demanding role elsewhere. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
 
 ```{r echo=FALSE}
-p_role
+p_years
 ```
 
 
@@ -202,34 +212,60 @@ In general, some job roles are more attractive to the general public than others
 It is worth noting that although sales executive has relatively high salary, their attrition rate is also high. Further studies can involve understanding why this group of employees is different to the norm. 
 
 
-```{r,echo=FALSE,message=FALSE}
+```{r,echo=FALSE}
+p_role
 # create a grid to display graphs in a more compact form 
-grid.arrange(p_Dist,p_jsat, p_biztrav,p_wlbalance, ncol=2)
+#grid.arrange(p_Dist,p_jsat, p_biztrav,p_wlbalance, ncol=2)
 ```
 
 **Effect of distance from home**
 
 The graph shows that in general, employees are more likely to leave the company as distance from home increases from 0 to 25 miles. However, when the working distance is larger than 25 miles, the proportion of employees who leave the company decreases. This could be due to the fact that there is only a few employees that live more than 25 miles away from home. In other words, if a job office is too far away, more people might not even join the company to begin with.
 
+```{r,echo=FALSE}
+p_Dist
+```
+
 **Effect of job satisfaction**
 
 Next, Job Satisfaction was investigated to gauge its influence on an IBM employee's decision on whether to stay or not. The above graph displays a negative relationship: as job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%. This thereby indicates that methods tailored to the improvement of job satisfaction could help to prevent employees from leaving the company.
 
+```{r,echo=FALSE}
+p_jsat
+```
+
 **Effect of business travel **
 
-In this bar chart, it can be seen that higher attrition rate is associated with frequent business travel. Only 8 percent of employees want to leave company if their role does not require travelling, whereas, attrition spikes to 25 percent when the job requires frequent travel. 
+In this bar chart, it can be seen that higher attrition rate is associated with frequent business travel. Only 8 percent of employees want to leave company if their role does not require travelling, whereas, attrition spikes to 25 percent when the job requires frequent travel.
 
+```{r,echo=FALSE}
+p_biztrav
+```
 
 **Effect of work life balance**
 
 On the indeed.com report @indeedJobTenure work like balance is the fourth largest contributor to attrition. Plots generated by the IBM dataset show that around 30 percent of employees choose to leave the company if they had a really bad work life balance (rating of 1). However as the level increases to 2 and more, the attrition percentage does not change significantly. It can suggest that once a work life balance threshold is met, effect for improvement is not obvious. 
 
+```{r,echo=FALSE}
+p_wlbalance
+```
 
 **Graphical Analysis Summary**
 
 Eight graphs were shown aiming to find some relationship between attrition and other factors captured by the company. From the graphical analysis, it was found that monthly income, job satisfaction, distance from home and frequency of business travel show a potential influence on retention. However, we can only see a general trend through graphical Analysis. In the following parts, we will continue exploring the relationship between attrition and potential influencers through correlation and hypothesis tests.
 
 ##Correlation
+```{r,echo=FALSE}
+Corrgram_dataset <-select(IBM,TotalSatisfaction,Age,DistanceFromHome,NumCompaniesWorked,TotalWorkingYears,DailyRate,HourlyRate,MonthlyIncome,MonthlyRate,PercentSalaryHike,YearsAtCompany,YearsInCurrentRole,YearsSinceLastPromotion,YearsWithCurrManager)
+
+library(corrgram)
+corrgram(Corrgram_dataset,main="Correlogram of IBM data set", labels = c("TS","Age","Distance","NCW","TWY","DR","HR","MI","MR","PSH","YAC","YICR","YSLP","YWCM") )
+
+Corrgram_dataset_key<-data.frame("Key" = c("TS","Age","Distance","NCW","TWY","DR","HR","MI","MR","PSH","YAC","YICR","YSLP","YWCM") , "Description"=c("TotalSatisfaction","Age","DistanceFromHome","NumCompaniesWorked","TotalWorkingYears","DailyRate","HourlyRate","MonthlyIncome","MonthlyRate","PercentSalaryHike","YearsAtCompany","YearsInCurrentRole","YearsSinceLastPromotion","YearsWithCurrManager"))
+knitr::kable(Corrgram_dataset_key, caption="Description of Correlogram variables", align='l')
+```
+
+From the correlogram shown above, it is evident that there are not a lot of variables which are highly correlated to each other. This is reassuring for the regression analysis as this helps to avoid multi-collinearity.  Having said that, it is also evident that years at company, years in current role, years with current manager and years since last promotion are highly correlated.
 
 From observing graphs plotted in the previous section, it can be seen that the higher the monthly income the less likely employee is going to leave. However, at the high end of the income spectrum, there is an unusual increase in attrition rate compared to those in the medium income range. This can be due to a mismatch in work experience, measured in total working years, and income rather than simply the level of income. Therefore, correlation between monthly income and total working years is examined. 
 
@@ -279,6 +315,8 @@ b<-data.frame(Variable1,Variable2,Chisq_P_Value)
 knitr::kable(b, caption="Chi-Square Test Result", align='l')
 
 ```
+
+The Chi-square test clearly shows evidence that the distributions for those people who leave and those who do not is statistically different in terms of their job satisfaction, role, frequency of business travel and work life balance. We can see this from the extremely low p-values displayed on the output. These results clearly suggest that regression analysis can be used as a method to quantify the impact of these differences on the attrition rate. It was proposed that such analysis would aid the company in the reduction of it’s attrition rate by strategizing efficiently.
 
 ##Regression Analysis
 
@@ -389,12 +427,17 @@ We can clearly see from the result below that business travel and overtime has t
 ```{r, echo=FALSE,results="asis"}
 #Model with only variables that a company can control
 company_control_model_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+HourlyRate+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = predictdata_avi, family= binomial)
+```
 
+**Odds Ratio Summary**
+```{r, echo=FALSE}
 #Odds Ratio Calculation for the model with only variables that a company can control
 reg_out_control <- or_glm(data = predictdata_avi, model = company_control_model_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TrainingTimesLastYear = 1, YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, CI = 0.95))
 
 formattable(reg_out_control)
+```
 
+```{r,results="asis", echo=FALSE, results="asis"}
 stargazer(company_control_model_v1, title="Regression Results for Company Control Model",
 align = TRUE, covariate.labels=c("Business travel - frequently", "Business travel - rarely",
 "Daily rate", "Research and Development(Dpt.)", "Sales(Dpt.)", "Hourly rate", "Monthly Income", "Number of companies worked", "Overtime - YES", "Percent salary hike", "Training times last year", "Years in current role", "Years since last Promotion", "Years with current manager", "Total Satisfaction", "Constant"), no.space=TRUE, type = "html")
@@ -410,12 +453,18 @@ Although this model has variables that might not be under direct influence of th
 ```{r, echo=FALSE,results="asis"}
 #Model with only variables that a company can't control
 out_of_control_v1<-glm(Attrition~+EducationField+Gender+MaritalStatus+DistanceFromHome+NumCompaniesWorked+TotalWorkingYears+TotalSatisfaction,data = predictdata_avi, family= binomial)
+```
 
+**Odds Ratio Summary**
+```{r, echo=FALSE}
 #Odds Ratio Calculation for the model with only variables that a company can't control
 reg_out_out_of_control <- or_glm(data = predictdata_avi, model = out_of_control_v1, incr = list(TotalSatisfaction = 1, NumCompaniesWorked = 1 , TotalWorkingYears = 1, MartialStatus = 1, DistanceFromHome = 10, CI = 0.95))
 
 formattable(reg_out_out_of_control)
+```
 
+
+```{r, echo=FALSE, results="asis"}
 stargazer(out_of_control_v1, title="Regression Results for Company Out of Control Model",
 align = TRUE, covariate.labels=c("Education Field - Life Sciences", "Education Field - Marketing",
 "Education Field - Medical", "Education Field - Other", "Education Field - Technical", "Male", "Single", "Divorced", "Distance from home", "Number of Companies Worked", "Total Working Years", "Total Satisfaction", "Constant"), omit.stat=c("LL","ser","f"), no.space=TRUE, type = "html")
@@ -431,6 +480,11 @@ The result of this model is similar to the two models presented above and thus a
 #Model with only performance variables
 model_reg_performance<-glm(Attrition~OverTime+PercentSalaryHike+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction+BusinessTravel,data = predictdata_avi, family= binomial)
 
+```
+
+
+**Odds Ratio Summary**
+```{r, echo=FALSE,results="asis"}
 #Odds Ratio Calculation for model with only performance variables
 reg_out_model_reg_performance <- or_glm(data = predictdata_avi, model = model_reg_performance, incr = list(TotalSatisfaction = 1 ,PercentSalaryHike = 1,TrainingTimesLastYear=1, YearsAtCompany = 1, YearsInCurrentRole = 1, YearsSinceLastPromotion = 1, YearsWithCurrManager = 1,  CI = 0.95))
 
@@ -454,13 +508,19 @@ The full model suggests that a one point increase in total satisfaction results 
 ```{r, echo=FALSE}
 #Full Model 
 full_model_reg_v1<-glm(Attrition~BusinessTravel+DailyRate+Department+DistanceFromHome+EducationField+HourlyRate+Gender+MaritalStatus+MonthlyIncome+NumCompaniesWorked+OverTime+PercentSalaryHike+TotalWorkingYears+TrainingTimesLastYear+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager+TotalSatisfaction,data = predictdata_avi, family= binomial)
+```
 
+**Odds Ratio Summary**
+
+```{r, echo=FALSE}
 #Full Model Odds Ratio Calculation
 reg_out_full_model <- or_glm(data = predictdata_avi, model = full_model_reg_v1, incr = list(TotalSatisfaction = 1, DistanceFromHome =5, NumCompaniesWorked = 1 , DailyRate = 10, HourlyRate = 100, MonthlyIncome = 1000, PercentSalaryHike = 1, TotalWorkingYears = 1, TrainingTimesLastYear = 1, YearsAtCompany = 1,YearsInCurrentRole = 1,YearsWithCurrManager=1,YearsSinceLastPromotion=1, Gender=1 , MartialStatus = 1, CI = 0.95))
 
 formattable(reg_out_full_model)
 
 ```
+
+**Average Partial Effect Summary**
 
 ```{r, echo=FALSE}
 #Average Partial Effect Calculation for full model
@@ -476,6 +536,7 @@ formattable(APE_out_data_frame)
 stargazer(list(full_model_reg_v1,company_control_model_v1,out_of_control_v1,model_reg_performance), title="Regression Results Summary",align = TRUE, covariate.labels=c("Business Travel - Frequently", "Business Travel - Rarely","Daily Rate", "Research and Development(Dpt.)", "Sales(Dpt.)", "Distance From Home", "Education Field - Life Sciences", "Education Field - Marketing","Education Field - Medical", "Education Field - Other", "Education Field - Technical", "Hourly Rate", "Male", "Single", "Divorced", "Monthly Income", "Number of Companies Worked", "Overtime - YES", "Percent Salary Hike","Total Working Years","Training Times Last Year", "Years at Company", "Years in Current Role", "Years Since Last Promotion","Years with Current Manager","Total Satisfaction","Constant"), omit.stat=c("LL","ser","f"), type = "html", dep.var.caption = ('"(1)" Full (2) Control (3) Out (4) Perf'))
 
 ```
+
 
 # Model Evaluation
 
@@ -509,6 +570,7 @@ df<-data.frame("Prediction" = c("No","Yes") , "No" = c(727,26), "Yes"=c(80,66))
 kable(df,format = "html",caption = "Actual vs Predicted Attrition")%>%add_header_above(c(" ", "Actual" = 2))
 ```
 
+
 From the confusion matrix, it is noticeable that the accuracy rate is 88%, implying that the model used is a good one. This high accuracy rate however is probably a bit optimistic as it uses the data that the model was trained on, and it is thus required to test this model on data which it hasn't seen before.
 
 ```{r,echo=FALSE,eval=FALSE}
@@ -525,6 +587,7 @@ confusionMatrix(pyes1,test[,2])
 df1<-data.frame("Prediction" = c("No","Yes") , "No" = c(342,17), "Yes"=c(54,30))
 kable(df1,format = "html",caption = "Actual vs Predicted Attrition")%>%add_header_above(c(" ", "Actual" = 2))
 ```
+
 
 Observing the confusion matrix, where the predictions are the rows and the actual class is the columns, it is visible that the accuracy is just the trace of the matrix divided by the total sum of each of the individual components. This makes sense as the main diagonal is essentially the cases where the model predicted the correct class. In this case, when we predict the data from the test dataset, we get an accuracy of 84%, implying that our model is good and has some predictive power. It is important to note however that the No Information Rate is 0.81 and the probability that the accuracy is better than the No Information Rate is 0.06, meaning that a model which just predicts all cases as the more popular case would be accurate 81% of the time and our current model isn't much better than this. This drawback becomes a bit more evident when it is observed that while the accuracy of predicting the 'positive' (No) class  is 0.95 (Sensitivity), the 'negative' (Yes) class is only predicted accurately 36% (Specificity) of the time, meaning that this model might not be very good to predict which employees leave. This being said, 64% (Negative Predictive Value) of all the cases that were predicted as 'negative' were actually 'negative', meaning that some predictive power can be inferred, given the imbalanced proportion between the two classes.
 
