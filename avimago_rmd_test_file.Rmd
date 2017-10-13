@@ -182,7 +182,7 @@ p_role<-ggplot(IBM,aes(x=JobRole,fill=Attrition))+geom_bar(position="fill")+them
 p_IncoRole<-ggplot(IBM, aes(x=JobRole, y=MonthlyIncome))+geom_boxplot()+theme(axis.text = element_text(angle = 45,hjust = 1))
 p_income<-ggplot(IBM,aes(x=MonthlyIncome,fill=Attrition))+geom_histogram(position="fill", binwidth=2500)
 p_years<-ggplot(IBM,aes(x=YearsAtCompany,fill=Attrition))+geom_density(adjust=1.5, position="fill")
-p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")
+p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
 
 # create a grid to display graphs in a more compact form 
