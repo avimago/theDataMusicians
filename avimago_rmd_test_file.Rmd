@@ -41,20 +41,13 @@ opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
 ## The Attrition Problem 
 The competition for employers to acquire and retain talent is just as furious as that for candidates to get into an organization. Moreover, employers have to bare the different costs associated with employee attrition. Example cost implications are the costs required to recruit a new person to cover the role, the man-hours, or wage, lost due to lower efficiency of new recruits, and training costs. An article on the Robert Half website estimated that it takes on average 28 days to recruit for an open position @robertHalf. In some cases, it might even take months before the human resources (HR) team can hire someone suitable to fill the gap. According to Schawbel, “The biggest priority, and concern, for business leaders in 2017 will be retaining employees in a competitive talent marketplace.” @fortuneEmployersWorry 
 
-### Importance of Retention
-Retention is a growing concern for organizations in both the private and public sectors: employee turnover rates have been on the increase in Europe and the US for some time. Whilst it may be of benefit to the employees, it undoubtedly levied considerable costs on the employers. Research from Bersin Deloitte reported that the talent acquisition spending of US companies increased by 7% on average from 2013 to $4000 per hire in 2014 @Cision. As recruiters struggle, many reach out to consultancies for help. Consultancy.uk revealed that the HR consulting market grew by 4.8% from 2014 to 2015. It can be seen that increasing retention is important @ConsultancyUK. Hence, we are exploring an HR data set to analyze variables that can affect attrition.
+Retention is a growing concern for organizations in both the private and public sectors: employee turnover rates have been on the increase in Europe and the US for some time. Whilst it may be of benefit to the employees, it undoubtedly levies considerable costs on the employers. Research from Bersin Deloitte reported that the talent acquisition spending of US companies increased by 7% on average from 2013 to $4000 per hire in 2014 @Cision. As recruiters struggle, many reach out to consultancies for help. Consultancy.uk revealed that the HR consulting market grew by 4.8% from 2014 to 2015. It can be seen that increasing retention is important @ConsultancyUK. Hence, we are exploring an HR data set to analyze variables that can affect attrition.
  
-### Increasing Retention 
-In order to improve retention in a company it would be of great benefit to know those factors that influence an employees decision, and to understand the relationships between these factors. Obvious examples would be the financial reward per unit time contributed, benefits and working hours. Indeed.com, an American job search engine, published a report on job tenure which showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure. 
+In order to improve retention in a company it would be of great benefit to know those factors that influence an employee's decision to leave, and to understand the relationships between these factors. Obvious examples would be the financial reward per unit time contributed, benefits and working hours. Indeed.com, an American job search engine, published a report on job tenure which showed that career advancement and compensation are by far the leading reasons for changing companies, followed by work environment and work life balance @indeedJobTenure. Depending on what the job entails and the individual, other influencers could include: working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. 
 
 ![Attrition Factors from Indeed](indeedShowMeTheMoney.png) 
 
-Depending on what the job entails and the individual, other influencers could include: working environment, distance from home, the amount of travelling required, relationship with colleagues, sense of achievement, autonomy, personal development. 
-
-
-## Report Objective
-
-We would like to test whether the above is true from the dataset we obtained from Kaggle, a data-related website. More broadly, we would like to advise companies on methods to retain their valuable employees. To do this, there are two problems to solve. Firstly, we must identify those influencers that contribute most to an employee taking the decision to leave the company. Secondly, we must produce a model that can give the likelihood of an employee leaving. The model will highlight to the company who they risk losing. Then, based on our information, the employer can design bespoke schemes or programmes which aim to prevent the high risk employees from leaving. 
+We would like to test whether the above is true from a dataset obtained from Kaggle, a data-related website. More broadly, we would like to advise companies on methods to retain their valuable employees. To do this, there are two problems to solve. Firstly, this report identifies influencers that contribute most to an employee taking the decision to leave the company. This is followed by a regression model that predicts the impact of certain variables on the likelihood of an employee leaving. The model will highlight to the company who they risk losing. Then, based on our information, the employer can design bespoke schemes or programmes which aim to prevent the high risk employees from leaving. 
 
 # Method
 
@@ -72,7 +65,7 @@ IBM <- select(IBM, Age:EducationField, EnvironmentSatisfaction:NumCompaniesWorke
 
 This is a cross-sectional dataset of survey answers and objective information regarding the employees of IBM. It has a total of 1470 observations (employees) across 35 variables (information about the employee). The variables can be broadly divided into three groups: personal information, job specific information, and subjective ratings. 
 
-In our analysis, the columns EmployeeCount and EmployeeNumber are not useful, and the value in Over18 and StandardHour are the same with all employees (Yes and 80 respectively), so these four columns are filtered out to make our analysis more efficient.
+In our analysis, the columns EmployeeCount and EmployeeNumber are not useful, and the values in Over18 and StandardHour are the same for all employees (Yes and 80 respectively), so these four columns are filtered out to make our analysis more efficient.
 
 ```{r, echo=FALSE}
 #Total Satisfaction (See commit SHA - f2c21d6c)
@@ -89,9 +82,9 @@ IBM$WorkLifeBalance<-ordered(IBM$WorkLifeBalance,levels=c("1","2","3","4"))
 
 ```
 
-The dataset has several ordered factor variables that are logged as integers. For example, the Education column uses integer between 1 to 5 to refer to the level of education of this employee. The numbers respectively means 'below college', 'college', 'bachelor', 'master' and 'doctor'. To catogerize the education level, the integers indicating the education level were change into factors. The same approach was taken for similar variables, including 'JobLevel', 'StockOptionLevel' and 'TrainingTimeLastYear'. 
+The dataset has several ordered factor variables that are logged as integers. For example, the Education column uses integers between 1 to 5 to refer to the level of education of this employee. The numbers respectively means 'below college', 'college', 'bachelor', 'master' and 'doctor'. To catogerize the education level, the integers indicating the education level were changed into factors. The same approach was taken for similar variables including 'JobLevel', 'StockOptionLevel' and 'TrainingTimeLastYear'. 
 
-Variables related to employee personal information are shown in the following table.
+**Variables related to employee personal information are shown in the following table:**
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -109,7 +102,7 @@ personal <- data.frame(Variable=c("Age", "DistanceFromHome", "Education",
 kable(personal, caption = "Personal Information", align='l')
 ```
 
-Variables relating to the employee's job at the company includes the following. 
+**Variables relating to the employee's job at the company includes the following:** 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -119,32 +112,32 @@ jobinfo <- data.frame(Variable=c("Attrition","BusinessTravel","DailyRate","Depar
                                  "YearsInCurrentRole", "YearsSinceLastPromotion","YearsWithCurrManager"),
                       Type=c("Factor","Factor","Integer","Factor","Integer","Factor","Factor","Factor","Integer","Integer",
                              "Factor","Integer","Integer","Factor","Factor","Integer","Integer","Integer","Integer"),
-                      Description=c("If this employee left the company", "The frquency of business travel", "The daily rate of the employee", 
-                                    "The department of this employee (Human Resource, Research & Development and Sales)","The hourly rate of the employee","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","The monthly rate of the employee", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee process", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
+                      Description=c("If this employee left the company or not", "The frequency of business travel", "The daily rate of the employee", 
+                                    "The department of this employee (Human Resource, Research & Development and Sales)","The hourly rate of the employee","1 'Low', 2 'Medium', 3 'High', 4 'Very High'","The level of this employee's job","The position of this employee (Sales Executive, Research Scientist, Laboratory Technician, Manufacturing Director, Healthcare Representative, Manager, (Other))", "The salary of this employee","The monthly rate of the employee", "If this employee works over time (Yes, No)", "The percentage of salary hike", "1 'Low', 2 'Good', 3 'Excellent', 4 'Outstanding'", "The amount of stock this employee possesses", "The length of training the employee took last year", "The number of years this employee has been in the company", "The number of years this employee has been in this position","The number of years since last promotion", "The number of years this employee has been with current manager"))
 
 kable(jobinfo, caption = "Job Information", align='l')
 ```
 
-Lastly, subjective ratings that are possibly obtained from a survey are captured by the following variables. 
+**Lastly, subjective ratings that are possibly obtained from a survey are captured by the following variables:** 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 totals <- data.frame(Variable=c("EnvironmentSatisfaction","JobSatisfaction","RelationshipSatisfaction","WorkLifeBalance"),
                      Type=c("Factor","Factor","Factor","Factor"),
-                     Description=c("Satisfaction to the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
-                                   "Satisfaction to the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
-                                   "Satisfaction to the relationship (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                     Description=c("Satisfaction derived from the environment (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "Satisfaction derived from the job (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
+                                   "Satisfaction derived from relationships (1 'Low', 2 'Medium', 3 'High', 4 'Very High')",
                                    "The work life balance rate (1 'Bad', 2 'Good', 3 'Better', 4 'Best')"))
 
 kable(totals, caption = "Satisfaction to the Job in Total", align='l')
 ```
 
-The gender distribution of the 1470 employees is such that 2/3 of these employees are male, as per the pie chart below.
+**The gender distribution of the 1470 employees is such that 2/3 of these employees are male, as per the pie chart below:**
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(IBM, aes(x = factor(""), fill = Gender))+geom_bar()+coord_polar(theta = "y")+labs(title = "Gender Distribution")+scale_x_discrete("")+theme_minimal()
 ```
 
-The dataset includes information about employees from 3 different departments in 7 different roles. The composition is such: two-thirds of the recorded employees are from the Research & Development department, 63 employees recorded were from the Human Resources department, and employees from Sales took up the remaining part. Apart from the "Manager" role, each role corresponds to a specific department. Hence, when performing regression analysis on attrition we will need to consider the interdependency between roles and department.
+The dataset includes information about employees from 3 different departments in 7 different roles. The composition is such: ~67% of the recorded employees are from the Research & Development department, ~4% employees recorded were from the Human Resources department, and employees from Sales took up the remaining part. 
 
 ```{r echo=FALSE}
 ggplot(IBM,aes(JobRole, fill=Department))+geom_bar(position="dodge")+theme(axis.text = element_text(angle = 65,hjust = 1))
@@ -186,16 +179,16 @@ p_biztrav<-ggplot(IBM,aes(x=BusinessTravel,fill=Attrition))+geom_bar(position="f
 p_wlbalance<-ggplot(IBM,aes(x=WorkLifeBalance,fill=Attrition))+geom_bar(position="fill")
 
 # create a grid to display graphs in a more compact form 
-grid.arrange(p_income, p_years,  ncol=2)
+grid.arrange(p_income, p_years,  ncol=2, widths=c(3,3))
 ```
 
 **Effect of income**
 
-According to the report on work force movement published by indeed.com @indeedJobTenure, job compensation is the second most popular reason for moving from a company. The above graph on attrition rate with regards to monthly income shows an agreement with the findings of indeed.com. Leavers are concentrated in the low income range. Interestingly, employees with a very high monthly income of 20,000 also encounter a non-neglibible attrition. If this is still the case when other influential variables are held constant, IBM may need to investigate further. Possible reasons can be that these talents are too popular so other companies are willing to offer more to get them or that they are hired on a temporary contract basis.
+According to the report on work force movement published by indeed.com @indeedJobTenure, job compensation is the second most popular reason for moving from a company. The above graph on attrition rate with regards to monthly income shows an agreement with the findings of indeed.com. Leavers are concentrated in the low-income range. Interestingly, a sizeable attrition rate is also observed in the upper quartile of monthly income. If this is still the case when other influential variables are held constant, IBM may need to investigate further. Possible reasons can be that these talents are too popular so other companies are willing to offer more to get them or that they are hired on a temporary contract basis.
 
 **Effect of years spent at the company**
 
-An article on TLNT claimed that employers lose a third of their new hires within the first six months @talent. The graph yielded from this dataset agrees with this to some extent. The percentage of attrition smoothly goes down during the first 20 years. However, there are spikes in attrition for people who have been in the company for around 32 and 40 years, to around 90 percent. This could be caused by people retiring or stepping back to do a less demanding role elsewhere. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
+An article on TLNT claimed that employers lose a third of their new hires within the first six months @talent. The graph yielded from this dataset agrees with this to some extent. The percentage of attrition decreases during the first 20 years. However, there are spikes in attrition for people who have been in the company for around 32 and 40 years, to around 90 percent. This could be caused by people retiring or stepping back to do a less demanding role elsewhere. To sum up, People are more likely to leave the company during the first few years or after staying for more than 30 years.
 
 ```{r echo=FALSE}
 p_role
@@ -204,7 +197,7 @@ p_role
 
 **Percentage who leave with respect to job role**
 
-From experience, some job roles are more attractive to the general public than others. Hence, the attrition distibution across job roles is plotted. The bar chart demonstrates that sales representatives have the highest attrition rate followed by laboratory technicians and Human Resources. The high attrition rate for sales representatives, laboratory technicians and HR can be related to the low wage of the roles shown above.  
+In general, some job roles are more attractive to the general public than others. Hence, the attrition distibution across job roles is plotted. The bar chart demonstrates that sales representatives have the highest attrition rate followed by laboratory technicians and Human Resources. The high attrition rate for sales representatives, laboratory technicians and HR can be related to the low wage of the roles shown above.  
 
 It is worth noting that although sales executive has relatively high salary, their attrition rate is also high. Further studies can involve understanding why this group of employees is different to the norm. 
 
@@ -216,20 +209,20 @@ grid.arrange(p_Dist,p_jsat, p_biztrav,p_wlbalance, ncol=2)
 
 **Effect of distance from home**
 
-The bar chart for distance from home is plotted with position equals fill to show proportion of leavers more clearly. The graph shows that in general, employees are more likely to leave the company as distance from home increases from 0 to 25 miles. However, when the working distance is larger than 25 miles, the proportion of employees who leave the company decreases. This could be due to the fact that there is only a few employees that live more than 25 miles away from home. In other words, if a job office is too far away, more people might not even join the company to begin with.
+The graph shows that in general, employees are more likely to leave the company as distance from home increases from 0 to 25 miles. However, when the working distance is larger than 25 miles, the proportion of employees who leave the company decreases. This could be due to the fact that there is only a few employees that live more than 25 miles away from home. In other words, if a job office is too far away, more people might not even join the company to begin with.
 
 **Effect of job satisfaction**
 
-Intuitively, if a person can get satisfaction from an activity, it is likely that he/she will continue doing it. Hence, job satisfaction is investigated to gauge its influence on the IBM employee's decision on whether to stay or not. The graph regarding job satisfaction shows that as job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%, thereby indicating that improving job satisfaction may help prevent employees from leaving the company.
+Next, Job Satisfaction was investigated to gauge its influence on an IBM employee's decision on whether to stay or not. The above graph displays a negative relationship: as job satisfaction increases from 1 to 4, the percentage of attrition decreases from 24% to 10%. This thereby indicates that methods tailored to the improvement of job satisfaction could help to prevent employees from leaving the company.
 
 **Effect of business travel **
 
-It might be exciting to young people to travel during their work. However, many people find it tiring. In this business travel bar chart, it can be seen that higher attrition rate is associated with frequent business travel. Only 8 percent of employees want to leave company if their role does not require travelling, whereas, attrition hikes to 25 percent when the job requires frequent travel. 
+In this bar chart, it can be seen that higher attrition rate is associated with frequent business travel. Only 8 percent of employees want to leave company if their role does not require travelling, whereas, attrition spikes to 25 percent when the job requires frequent travel. 
 
 
 **Effect of work life balance**
 
-On the indeed.com report @indeedJobTenure work like balance is the fourth largest contributor to attrition. Plots generated by the IBM dataset show that around 30 percent of employees choose to leave the company if they had a really bad work life balance, rating=1. However with the level increases to 2 and more, the attrition percentage does not change significantly. It can suggest that once a work life balance threshold is met, effect for improvement is not obvious. 
+On the indeed.com report @indeedJobTenure work like balance is the fourth largest contributor to attrition. Plots generated by the IBM dataset show that around 30 percent of employees choose to leave the company if they had a really bad work life balance (rating of 1). However as the level increases to 2 and more, the attrition percentage does not change significantly. It can suggest that once a work life balance threshold is met, effect for improvement is not obvious. 
 
 
 **Graphical Analysis Summary**
@@ -270,7 +263,7 @@ Separating the sample into people who left and people who stayed, it was found t
 
 ## Chi-Square Test 
 
-Through graphical observation, some variables that influence attrition have been identified. In this section, hypothesis test is applied to these variables to further investigate their relevance to attrition. A Pearson's chi-square test is chosen because it can be used to determine whether there is a significant difference between the expected frequencies and the observed frequencies in one or more categories.@wiki This is suitable for data obtained from survey which is answered in limited multiple choice form. 
+Through graphical observation, some variables that influence attrition have been identified. In this section, hypothesis test is applied to these variables to further investigate their relevance to attrition. A Pearson's chi-square test is chosen because it can be used to determine whether there is a significant difference between the expected frequencies and the observed frequencies in one or more categories.This is suitable for data obtained from survey which is answered in limited multiple choice form. 
 
 ```{r,echo=FALSE,message=FALSE}
 t_JobSat<-chisq.test(IBM$JobSatisfaction,IBM$Attrition)
